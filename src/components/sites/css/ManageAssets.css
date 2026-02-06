@@ -1,0 +1,103 @@
+.manage-assets {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Korrigiert, verwendet `flex-start` */
+    padding: 20px;
+    width: 100%;
+}
+
+.chart-container {
+    width: 70%;
+    max-width: 500px;
+    max-height: 250px;
+    /* Optional: Anpassungen für eine Ausrichtung nach links, falls nötig */
+}
+
+.piechart-container {
+    height: 250px;
+    /* Höhenanpassung für das PieChart */
+    margin: auto;
+    /* Zentriert das PieChart im .chart-container */
+}
+
+
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    /* Sicherstellen, dass der Text der Überschrift zentriert ist, falls nötig */
+    font-size: 24px;
+    /* Setzt die Schriftgröße auf 24 Pixel */
+}
+
+.total-sum {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.table-wrapper-on-site {
+    margin-top: 20px;
+    max-height: 240px;
+    /* Höhe anpassen, wie benötigt */
+    overflow-y: auto;
+}
+
+/*modal*/
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    /* Zentriert die Buttons horizontal */
+    margin-top: 20px;
+    /* Fügt etwas Abstand nach oben hinzu */
+}
+
+.btn-uniform {
+    width: 110px;
+    /* Legt eine feste Breite fest */
+    height: 40px;
+    /* Legt eine feste Höhe fest */
+    display: inline-block;
+    /* Erlaubt die Anwendung von Breite und Höhe */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+}
+
+.modal-content-container {
+    display: flex;
+    gap: 20px;
+}
+
+.divider {
+    width: 1px;
+    background-color: #000;
+
+    /* Passt die Höhe des Trenners an die des Containers an */
+}
+
+.asset-table-container,
+.asset-form-container {
+    flex: 1;
+    /* Ermöglicht den Kindern, den verfügbaren Platz gleichmäßig aufzuteilen */
+}
+
+/* CSS */
+.table-wrapper {
+    max-height: 370px;
+    /* Höhe anpassen, wie benötigt */
+    overflow-y: auto;
+    /* Aktiviert die vertikale Scrollbar, wenn nötig */
+}

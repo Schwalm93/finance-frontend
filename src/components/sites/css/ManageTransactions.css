@@ -1,0 +1,148 @@
+.btn-transaction {
+    background-color: #005ec2;
+
+    color: #ffffff;
+}
+
+/* .btn-transaction:hover {
+    background-color: #003d82; */
+/* Dunklere Hintergrundfarbe beim Hovern */
+/* color: #ffffff;
+/* Die Schriftfarbe bleibt gleich */
+/* } */
+.btn-transaction:active {
+    background-color: #002a5c;
+    /* Noch dunklere Hintergrundfarbe beim Klicken */
+    color: #ffffff;
+    /* Die Schriftfarbe bleibt gleich */
+}
+
+*/ .form-select {
+    background-color: #f8f9fa;
+    /* Leichter Hintergrund */
+    color: #495057;
+    /* Dunklere Schrift für bessere Lesbarkeit */
+    padding: .5rem 1rem;
+    /* Bequemere Polsterung */
+    border: 1px solid #ced4da;
+    /* Subtile Grenze */
+    border-radius: .25rem;
+    /* Leicht abgerundete Ecken */
+    appearance: none;
+    /* Entfernt standardmäßige Browser-Styles */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    /* Ändert den Cursor, um die Klickbarkeit anzuzeigen */
+    min-width: 172px;
+}
+
+.form-select:focus {
+    border-color: #80bdff;
+    /* Blaue Grenze beim Fokussieren */
+    outline: 0;
+    /* Entfernt den standardmäßigen Browser-Umriss */
+    box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
+    /* Leichter Fokus-Schatten */
+}
+
+/* Stil für Optionen im Dropdown (nicht in allen Browsern unterstützt) */
+.form-select option {
+    padding: .5rem;
+    /* Polsterung für jede Option */
+}
+
+
+
+.rounded-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 4px;
+    color: #333;
+    /* Rundet die Ecken ab */
+    overflow: hidden;
+    /* Versteckt die Inhalte, die über die abgerundeten Ecken hinausgehen könnten */
+}
+
+.table thead th {
+    background-color: #005ec2;
+    /* Ein frisches Blau für die Kopfzeile */
+    color: #ffffff;
+    /* Weiße Schrift für Kontrast */
+    border-bottom: 2px solid #4976a7;
+    /* Dunklere Linie für die Trennung */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+    /* Zarte Hintergrundfarbe beim Überfahren */
+}
+
+.table tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+    /* Zebra-Streifen für ungerade Zeilen */
+}
+
+.table td,
+.table th {
+    padding: .75rem;
+    /* Bequemere Polsterung */
+    border-top: 1px solid #dee2e6;
+    /* Subtile Grenzen */
+}
+
+.table td {
+    font-size: 0.9rem;
+    /* Angepasste Schriftgröße für Inhalte */
+}
+
+.rounded-table thead tr:first-child th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.rounded-table thead tr:first-child th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.rounded-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.rounded-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+/* In ManageTransactions.css */
+.my-text-green {
+    color: #28a745 !important;
+    /* Ein leichtes Grün */
+}
+
+.my-text-red {
+    color: #dc3545 !important;
+    /* Ein leichtes Rot */
+}
+
+/* Anpassung für den gesamten Scrollbar */
+::-webkit-scrollbar {
+    width: 5px;
+    /* Schmale Breite des Scrollbars */
+    height: 5px;
+    /* Höhe des Scrollbars für horizontales Scrollen, falls nötig */
+}
+
+/* Griff des Scrollbars */
+::-webkit-scrollbar-thumb {
+    background-color: #c7c7c7;
+    /* Dunkelgraue Farbe des Griffs */
+    border-radius: 10px;
+    /* Abrundung des Griffs für ein futuristisches Design */
+}
+
+/* Hintergrund des Scrollbars */
+::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+    /* Hellgraue Farbe des Hintergrunds */
+    border-radius: 10px;
+    /* Abrundung des Hintergrunds */
+}
