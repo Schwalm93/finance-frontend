@@ -11,4 +11,7 @@ export const API_ENDPOINTS = {
     addTransactions: `${API_BASE_URL}/transactions/addTransaction`,
     getAvailableYears: `${API_BASE_URL}/transactions/getAvailableYears`,
     getAvailableCategories: `${API_BASE_URL}/transactions/getAvailableCategories`,
+    addCategory: `${API_BASE_URL}/transactions/addCategory`,
+    deleteCategory: `${API_BASE_URL}/transactions/deleteCategory`,
+    updateCategory: `${API_BASE_URL}/transactions/updateCategory`,
 };

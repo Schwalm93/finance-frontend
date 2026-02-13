@@ -4,6 +4,7 @@ import { Transaction } from "../../models/transaction";
 import { API_ENDPOINTS } from "../../api/apiConfig";
 import './css/ManageTransactions.css';
 import { AddTransaction } from "../popups/AddTransaction";
+import { ManageCategories } from "../popups/ManageCategories";
 
 export const ManageTransaction: React.FC<{}> = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -14,6 +15,7 @@ export const ManageTransaction: React.FC<{}> = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [searchText, setSearchText] = useState<string>('');
     const [showAddTransaction, setShowAddTransaction] = useState(false);
+    const [showManageCategories, setShowManageCategories] = useState(false);
 
     const openAddTransactionModal = () => {
         setShowAddTransaction(true);
@@ -21,6 +23,19 @@ export const ManageTransaction: React.FC<{}> = () => {
 
     const closeAddTransactionModal = () => {
         setShowAddTransaction(false);
+    };
+
+    const openManageCategoriesModal = () => {
+        setShowManageCategories(true);
+    };
+
+    const closeManageCategoriesModal = () => {
+        setShowManageCategories(false);
+    };
+
+    const handleCategoriesChanged = () => {
+        fetchAvailableCategories();
+        fetchTransactions();
     };
 
     type AvailableYearsResponse = {
@@ -35,7 +50,7 @@ export const ManageTransaction: React.FC<{}> = () => {
         fetchTransactions();
         fetchAvailableYears();
         fetchAvailableCategories();
-    }, [selectedYear, selectedMonth, selectedCategory, showAddTransaction]);
+    }, [selectedYear, selectedMonth, selectedCategory, showAddTransaction, showManageCategories]);
 
     const fetchTransactions = () => {
         fetch(API_ENDPOINTS.getTransactionsByFilter(selectedYear, selectedMonth, selectedCategory))
@@ -119,6 +134,12 @@ export const ManageTransaction: React.FC<{}> = () => {
     const filteredTransactions = filterTransactions();
     const totalDisplayedAmount = filteredTransactions.reduce((total, transaction) => total + transaction.amount, 0);
 
+    useEffect(() => {
+        if (selectedCategory && !availableCategories.includes(selectedCategory)) {
+            setSelectedCategory('');
+        }
+    }, [availableCategories, selectedCategory]);
+
     return (
         <div className="container mt-5">
             <div className="row g-3 align-items-center justify-content-center">
@@ -185,8 +206,24 @@ export const ManageTransaction: React.FC<{}> = () => {
                         Transaktionen hinzufügen
                     </button>
                 </div>
+                <div className="col-auto">
+                    <button
+                        className="btn btn-outline-primary btn-transaction-outline"
+                        type="button"
+                        onClick={openManageCategoriesModal}
+                    >
+                        Kategorien verwalten
+                    </button>
+                </div>
 
                 {showAddTransaction && <AddTransaction handleFileuploadModal={closeAddTransactionModal} />}
+                {showManageCategories && (
+                    <ManageCategories
+                        categories={availableCategories}
+                        onClose={closeManageCategoriesModal}
+                        onChanged={handleCategoriesChanged}
+                    />
+                )}
             </div>
             <div className="table-responsive mt-3" style={{ maxHeight: '650px', overflowY: 'auto' }}>
                 <table className="table table-striped table-hover rounded-table">

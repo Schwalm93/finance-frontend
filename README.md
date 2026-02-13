@@ -61,5 +61,13 @@ From `frontend/`:
 npm run preview
 ```
 
+## Category Management Modal
+- In `Manage Transactions`, click `Kategorien verwalten` to open the category modal.
+- The modal supports:
+- create category (`POST /transactions/addCategory`)
+- update category (`PUT /transactions/updateCategory` with `oldCategory` and `newCategory`)
+- delete category (`DELETE /transactions/deleteCategory`)
+- After each change, category options are reloaded automatically in the transaction view.
+
 ## Docker Compose Integration
 From repository root, compose builds and serves the frontend through Nginx as the `frontend` service.

@@ -4,6 +4,16 @@
     color: #ffffff;
 }
 
+.btn-transaction-outline {
+    border-color: #005ec2;
+    color: #005ec2;
+}
+
+.btn-transaction-outline:hover {
+    background-color: #005ec2;
+    color: #ffffff;
+}
+
 /* .btn-transaction:hover {
     background-color: #003d82; */
 /* Dunklere Hintergrundfarbe beim Hovern */
