@@ -4,7 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-# wichtig: Vite nimmt .env.production automatisch beim build
+# Allow docker-compose build args to override API base URL at build time.
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 RUN npm run build
 
 # 2. Serve via nginx

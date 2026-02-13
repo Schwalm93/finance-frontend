@@ -22,7 +22,7 @@ Required variable:
 
 Current defaults:
 - development: `http://localhost:8080`
-- production: `http://MacBookPro/api`
+- production: `/api` (same host via Traefik proxy)
 
 ## Install
 From `frontend/`:
