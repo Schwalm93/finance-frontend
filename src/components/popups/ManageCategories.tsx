@@ -11,6 +11,36 @@ type Props = {
 };
 
 const DEFAULT_CATEGORY_COLOR = "#64748b";
+const CATEGORY_COLOR_PRESETS = [
+  "#22c55e",
+  "#f97316",
+  "#3b82f6",
+  "#ec4899",
+  "#f59e0b",
+  "#0ea5e9",
+  "#a855f7",
+  "#64748b",
+];
+
+const hexToRgba = (hexColor: string, alpha: number) => {
+  const sanitizedHex = hexColor.replace("#", "");
+
+  if (sanitizedHex.length !== 6) {
+    return `rgba(100, 116, 139, ${alpha})`;
+  }
+
+  const red = Number.parseInt(sanitizedHex.slice(0, 2), 16);
+  const green = Number.parseInt(sanitizedHex.slice(2, 4), 16);
+  const blue = Number.parseInt(sanitizedHex.slice(4, 6), 16);
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+};
+
+const getPreviewStyle = (color: string) => ({
+  color,
+  borderColor: hexToRgba(color, 0.28),
+  backgroundColor: hexToRgba(color, 0.16),
+});
 
 export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChanged }) => {
   const [newCategory, setNewCategory] = useState("");
@@ -188,6 +218,39 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
               </Form.Group>
             </div>
 
+            <div className="app-modal__stack">
+              <div>
+                <Form.Label>Farbvorschläge</Form.Label>
+                <div className="app-modal__color-palette">
+                  {CATEGORY_COLOR_PRESETS.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={`app-modal__color-swatch${newCategoryColor === color ? " is-active" : ""}`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => {
+                        setNewCategoryColor(color);
+                        resetError();
+                      }}
+                      aria-label={`Farbe ${color} auswählen`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Form.Label>Vorschau</Form.Label>
+                <div className="app-modal__tag-preview-wrap">
+                  <span
+                    className="app-modal__tag-preview"
+                    style={getPreviewStyle(newCategoryColor)}
+                  >
+                    {newCategory.trim() || "Neue Kategorie"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <Button
               className="app-modal__button"
               onClick={addCategory}
@@ -256,6 +319,39 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
                   }}
                 />
               </Form.Group>
+            </div>
+
+            <div className="app-modal__stack">
+              <div>
+                <Form.Label>Farbvorschläge</Form.Label>
+                <div className="app-modal__color-palette">
+                  {CATEGORY_COLOR_PRESETS.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={`app-modal__color-swatch${updatedCategoryColor === color ? " is-active" : ""}`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => {
+                        setUpdatedCategoryColor(color);
+                        resetError();
+                      }}
+                      aria-label={`Farbe ${color} auswählen`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Form.Label>Vorschau</Form.Label>
+                <div className="app-modal__tag-preview-wrap">
+                  <span
+                    className="app-modal__tag-preview"
+                    style={getPreviewStyle(updatedCategoryColor)}
+                  >
+                    {updatedCategoryName.trim() || selectedCategory || "Kategorie"}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="app-modal__actions">

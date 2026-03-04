@@ -69,6 +69,7 @@ npm run preview
 - delete category (`DELETE /transactions/deleteCategory`)
 - After each change, category options are reloaded automatically in the transaction view.
 - Category colors are selected directly in the modal via color input and reused for the visible transaction tags.
+- The modal also offers preset swatches and a live tag preview for faster color selection.
 
 ## Transaction Upload Modal
 - In `Manage Transactions`, click `Transaktionen hinzufügen` to open the upload modal.
