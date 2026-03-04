@@ -135,6 +135,13 @@ export const ManageTransaction: React.FC<{}> = () => {
     const filteredTransactions = filterTransactions();
     const totalDisplayedAmount = filteredTransactions.reduce((total, transaction) => total + transaction.amount, 0);
 
+    const getAmountClass = (transaction: Transaction) => {
+        const isPositive = transaction.amount > 0;
+        const isDepotDeposit = transaction.purpose === "Depot Einzahlung";
+
+        return isPositive || isDepotDeposit ? 'my-text-green' : 'my-text-red';
+    };
+
     useEffect(() => {
         if (selectedCategory && !availableCategories.includes(selectedCategory)) {
             setSelectedCategory('');
@@ -227,7 +234,7 @@ export const ManageTransaction: React.FC<{}> = () => {
 
             <section className="page-card">
                 <div className="page-card__body">
-                    <div className="transactions-table-shell">
+                    <div className="transactions-table-shell transactions-table-shell--desktop">
                         <div className="transactions-table-wrap" style={{ maxHeight: '650px' }}>
                         <table className="table transactions-table">
                             <thead>
@@ -242,10 +249,6 @@ export const ManageTransaction: React.FC<{}> = () => {
                             <tbody>
                             {filteredTransactions.length > 0 ? (
                                 filteredTransactions.map((transaction, index) => {
-                                    const isPositive = transaction.amount > 0;
-                                    const isDepotDeposit = transaction.purpose === "Depot Einzahlung";
-                                    const amountClass = isPositive || isDepotDeposit ? 'my-text-green' : 'my-text-red';
-
                                     return (
                                         <tr key={index}>
                                             <td>{transaction.date}</td>
@@ -255,7 +258,7 @@ export const ManageTransaction: React.FC<{}> = () => {
                                                 <span className="transactions-table__status">{transaction.status}</span>
                                             </td>
                                             <td>
-                                                <span className={`transactions-table__amount ${amountClass}`}>
+                                                <span className={`transactions-table__amount ${getAmountClass(transaction)}`}>
                                                     {transaction.amount}
                                                 </span>
                                             </td>
@@ -270,6 +273,37 @@ export const ManageTransaction: React.FC<{}> = () => {
                             </tbody>
                         </table>
                         </div>
+                    </div>
+
+                    <div className="transactions-mobile-list">
+                        {filteredTransactions.length > 0 ? (
+                            filteredTransactions.map((transaction, index) => (
+                                <article className="transactions-mobile-card" key={index}>
+                                    <div className="transactions-mobile-card__top">
+                                        <div className="transactions-mobile-card__copy">
+                                            <span className="transactions-mobile-card__label">Begünstigter</span>
+                                            <strong className="transactions-mobile-card__purpose">{transaction.purpose}</strong>
+                                        </div>
+                                        <span className={`transactions-table__amount ${getAmountClass(transaction)}`}>
+                                            {transaction.amount}
+                                        </span>
+                                    </div>
+
+                                    <div className="transactions-mobile-card__meta">
+                                        <div className="transactions-mobile-card__item">
+                                            <span className="transactions-mobile-card__label">Datum</span>
+                                            <span>{transaction.date}</span>
+                                        </div>
+                                        <div className="transactions-mobile-card__item">
+                                            <span className="transactions-mobile-card__label">Kategorie</span>
+                                            <span className="transactions-table__category">{transaction.category}</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            ))
+                        ) : (
+                            <div className="transactions-mobile-empty">Keine Transaktionen gefunden</div>
+                        )}
                     </div>
                 </div>
             </section>

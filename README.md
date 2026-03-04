@@ -96,6 +96,7 @@ npm run preview
 - The transaction overview table now uses a custom themed table shell instead of the default Bootstrap dark header look.
 - Header, row hover, status labels and amount pills match the new blue-gold design language.
 - Positive and negative amounts are rendered as colored capsules for faster scanning.
+- On screens up to `767px`, the transaction overview switches from the desktop table to stacked mobile cards so purpose, amount, date, category and status stay readable without horizontal scrolling.
 
 ## Docker Compose Integration
 From repository root, compose builds and serves the frontend through Nginx as the `frontend` service.

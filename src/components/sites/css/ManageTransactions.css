@@ -44,6 +44,10 @@
     overflow: auto;
 }
 
+.transactions-mobile-list {
+    display: none;
+}
+
 .transactions-table {
     margin-bottom: 0;
     border-collapse: separate;
@@ -155,6 +159,63 @@
     font-weight: 600;
 }
 
+.transactions-mobile-card {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1px solid rgba(20, 33, 61, 0.08);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.transactions-mobile-card__top,
+.transactions-mobile-card__meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.85rem;
+}
+
+.transactions-mobile-card__copy,
+.transactions-mobile-card__item {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.transactions-mobile-card__meta {
+    padding-top: 0.15rem;
+}
+
+.transactions-mobile-card__meta .transactions-mobile-card__item {
+    flex: 1 1 0;
+}
+
+.transactions-mobile-card__label {
+    color: #6a7687;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.transactions-mobile-card__purpose {
+    color: #14213d;
+    font-size: 1rem;
+    line-height: 1.35;
+}
+
+.transactions-mobile-empty {
+    padding: 1.35rem 1rem;
+    border: 1px solid rgba(20, 33, 61, 0.08);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #607086;
+    font-weight: 600;
+    text-align: center;
+}
+
 .page-stat strong.text-success {
     color: #15803d !important;
 }
@@ -187,22 +248,25 @@
         width: 100%;
     }
 
-    .transactions-table-shell {
-        border-radius: 20px;
+    .transactions-table-shell--desktop {
+        display: none;
     }
 
-    .transactions-table thead th,
-    .transactions-table td {
-        padding: 0.85rem 0.9rem;
+    .transactions-mobile-list {
+        display: grid;
+        gap: 0.85rem;
     }
 
-    .transactions-table__purpose {
-        min-width: 180px;
+    .transactions-mobile-card__top {
+        align-items: center;
     }
 
     .transactions-table__amount {
-        min-width: 96px;
+        min-width: 0;
         padding-right: 0.6rem;
         padding-left: 0.6rem;
+        justify-content: center;
+        align-self: center;
+        flex-shrink: 0;
     }
 }
