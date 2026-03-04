@@ -1,158 +1,192 @@
 .btn-transaction {
-    background-color: #005ec2;
+    min-height: 3rem;
+    border: 0;
+    border-radius: 14px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #14213d 0%, #224977 100%);
+    box-shadow: 0 12px 30px rgba(20, 33, 61, 0.14);
+    color: #ffffff;
+}
 
+.btn-transaction:hover,
+.btn-transaction:focus,
+.btn-transaction:active {
+    background: linear-gradient(135deg, #101b32 0%, #1b3b61 100%);
     color: #ffffff;
 }
 
 .btn-transaction-outline {
-    border-color: #005ec2;
-    color: #005ec2;
+    min-height: 3rem;
+    border: 1px solid #cfd8e5;
+    border-radius: 14px;
+    font-weight: 700;
+    color: #14213d;
+    background: #ffffff;
 }
 
-.btn-transaction-outline:hover {
-    background-color: #005ec2;
-    color: #ffffff;
+.btn-transaction-outline:hover,
+.btn-transaction-outline:focus,
+.btn-transaction-outline:active {
+    border-color: #c1ccd9;
+    background: #f7f8fb;
+    color: #14213d;
 }
 
-/* .btn-transaction:hover {
-    background-color: #003d82; */
-/* Dunklere Hintergrundfarbe beim Hovern */
-/* color: #ffffff;
-/* Die Schriftfarbe bleibt gleich */
-/* } */
-.btn-transaction:active {
-    background-color: #002a5c;
-    /* Noch dunklere Hintergrundfarbe beim Klicken */
-    color: #ffffff;
-    /* Die Schriftfarbe bleibt gleich */
+.transactions-table-shell {
+    overflow: hidden;
+    border: 1px solid rgba(20, 33, 61, 0.08);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-*/ .form-select {
-    background-color: #f8f9fa;
-    /* Leichter Hintergrund */
-    color: #495057;
-    /* Dunklere Schrift für bessere Lesbarkeit */
-    padding: .5rem 1rem;
-    /* Bequemere Polsterung */
-    border: 1px solid #ced4da;
-    /* Subtile Grenze */
-    border-radius: .25rem;
-    /* Leicht abgerundete Ecken */
-    appearance: none;
-    /* Entfernt standardmäßige Browser-Styles */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-    /* Ändert den Cursor, um die Klickbarkeit anzuzeigen */
-    min-width: 172px;
+.transactions-table-wrap {
+    overflow: auto;
 }
 
-.form-select:focus {
-    border-color: #80bdff;
-    /* Blaue Grenze beim Fokussieren */
-    outline: 0;
-    /* Entfernt den standardmäßigen Browser-Umriss */
-    box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
-    /* Leichter Fokus-Schatten */
-}
-
-/* Stil für Optionen im Dropdown (nicht in allen Browsern unterstützt) */
-.form-select option {
-    padding: .5rem;
-    /* Polsterung für jede Option */
-}
-
-
-
-.rounded-table {
+.transactions-table {
+    margin-bottom: 0;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 4px;
-    color: #333;
-    /* Rundet die Ecken ab */
-    overflow: hidden;
-    /* Versteckt die Inhalte, die über die abgerundeten Ecken hinausgehen könnten */
 }
 
-.table thead th {
-    background-color: #005ec2;
-    /* Ein frisches Blau für die Kopfzeile */
+.transactions-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 1rem 1.1rem;
+    border: 0;
+    background: linear-gradient(135deg, #14213d 0%, #224977 100%);
     color: #ffffff;
-    /* Weiße Schrift für Kontrast */
-    border-bottom: 2px solid #4976a7;
-    /* Dunklere Linie für die Trennung */
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
-.table-hover tbody tr:hover {
-    background-color: #f5f5f5;
-    /* Zarte Hintergrundfarbe beim Überfahren */
+.transactions-table thead th:first-child {
+    border-top-left-radius: 20px;
 }
 
-.table tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
-    /* Zebra-Streifen für ungerade Zeilen */
+.transactions-table thead th:last-child {
+    border-top-right-radius: 20px;
+    text-align: right;
 }
 
-.table td,
-.table th {
-    padding: .75rem;
-    /* Bequemere Polsterung */
-    border-top: 1px solid #dee2e6;
-    /* Subtile Grenzen */
+.transactions-table tbody tr {
+    transition: transform 160ms ease, background-color 160ms ease;
 }
 
-.table td {
-    font-size: 0.9rem;
-    /* Angepasste Schriftgröße für Inhalte */
+.transactions-table tbody tr:nth-of-type(odd) {
+    background: rgba(247, 249, 252, 0.85);
 }
 
-.rounded-table thead tr:first-child th:first-child {
-    border-top-left-radius: 8px;
+.transactions-table tbody tr:nth-of-type(even) {
+    background: rgba(255, 255, 255, 0.92);
 }
 
-.rounded-table thead tr:first-child th:last-child {
-    border-top-right-radius: 8px;
+.transactions-table tbody tr:hover {
+    background: rgba(242, 201, 76, 0.14);
+    transform: translateY(-1px);
 }
 
-.rounded-table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 8px;
+.transactions-table td {
+    padding: 1rem 1.1rem;
+    vertical-align: middle;
+    border-top: 1px solid rgba(20, 33, 61, 0.06);
+    color: #334155;
+    font-size: 0.95rem;
 }
 
-.rounded-table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 8px;
+.transactions-table td:last-child {
+    text-align: right;
 }
 
-/* In ManageTransactions.css */
+.transactions-table__purpose {
+    min-width: 220px;
+    font-weight: 600;
+    color: #14213d;
+}
+
+.transactions-table__category {
+    font-weight: 600;
+    color: #5c6a7d;
+}
+
+.transactions-table__status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid rgba(20, 33, 61, 0.08);
+    border-radius: 999px;
+    background: rgba(20, 33, 61, 0.05);
+    color: #334155;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.transactions-table__amount {
+    display: inline-flex;
+    justify-content: flex-end;
+    min-width: 108px;
+    padding: 0.45rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
 .my-text-green {
-    color: #28a745 !important;
-    /* Ein leichtes Grün */
+    background: rgba(34, 197, 94, 0.12);
+    color: #15803d !important;
 }
 
 .my-text-red {
-    color: #dc3545 !important;
-    /* Ein leichtes Rot */
+    background: rgba(220, 38, 38, 0.1);
+    color: #b91c1c !important;
 }
 
-/* Anpassung für den gesamten Scrollbar */
+.transactions-table__empty {
+    padding: 2.2rem 1rem !important;
+    text-align: center;
+    color: #607086;
+    font-weight: 600;
+}
+
+.page-stat strong.text-success {
+    color: #15803d !important;
+}
+
+.page-stat strong.text-danger {
+    color: #b91c1c !important;
+}
+
+.transactions-table-wrap::-webkit-scrollbar,
 ::-webkit-scrollbar {
-    width: 5px;
-    /* Schmale Breite des Scrollbars */
-    height: 5px;
-    /* Höhe des Scrollbars für horizontales Scrollen, falls nötig */
+    width: 6px;
+    height: 6px;
 }
 
-/* Griff des Scrollbars */
+.transactions-table-wrap::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
     background-color: #c7c7c7;
-    /* Dunkelgraue Farbe des Griffs */
     border-radius: 10px;
-    /* Abrundung des Griffs für ein futuristisches Design */
 }
 
-/* Hintergrund des Scrollbars */
+.transactions-table-wrap::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
     background-color: #f0f0f0;
-    /* Hellgraue Farbe des Hintergrunds */
     border-radius: 10px;
-    /* Abrundung des Hintergrunds */
+}
+
+@media (max-width: 767px) {
+    .transactions-table thead th,
+    .transactions-table td {
+        padding: 0.85rem 0.9rem;
+    }
+
+    .transactions-table__purpose {
+        min-width: 180px;
+    }
 }

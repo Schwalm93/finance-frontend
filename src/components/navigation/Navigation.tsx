@@ -47,7 +47,6 @@ export const Navigation: React.FC<{
             />
             <div className="app-nav__brand-copy">
               <span className="app-nav__brand-name">GoFinance</span>
-              <span className="app-nav__brand-subtitle">Übersicht für Transaktionen und Vermögen</span>
             </div>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

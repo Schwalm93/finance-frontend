@@ -5,30 +5,6 @@ import "./css/SiteLayout.css";
 export const LandingPage: React.FC<{}> = () => {
     return (
         <div className="page-shell">
-            <section className="page-hero">
-                <span className="page-hero__eyebrow">Dashboard</span>
-                <h1>Willkommen bei GoFinance</h1>
-                <p>
-                    Verwalte Transaktionen, Vermögen und Marktindikatoren in einer
-                    klaren Oberfläche mit derselben visuellen Sprache wie in den neuen Modals.
-                </p>
-            </section>
-
-            <section className="page-stat-grid">
-                <article className="page-stat">
-                    <span>Fokus</span>
-                    <strong>Transaktionen</strong>
-                </article>
-                <article className="page-stat">
-                    <span>Bereich</span>
-                    <strong>Vermögen</strong>
-                </article>
-                <article className="page-stat">
-                    <span>Live Daten</span>
-                    <strong>Krypto Preise</strong>
-                </article>
-            </section>
-
             <section className="page-grid page-grid--two">
                 <article className="page-card">
                     <div className="page-card__header">

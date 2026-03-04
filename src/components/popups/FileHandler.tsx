@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Button } from 'react-bootstrap';
 import {API_ENDPOINTS} from "../../api/apiConfig.ts";
 import './FileHandler.css';
@@ -58,20 +57,6 @@ function FileHandler({ onUploadSuccess }: FileHandlerProps) {
         <Button variant="dark" className="app-modal__button" onClick={handleUpload}>
           Upload starten
         </Button>
-      </div>
-      <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-      />
       </div>
     </div>
   );

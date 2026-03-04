@@ -143,19 +143,9 @@ export const ManageTransaction: React.FC<{}> = () => {
 
     return (
         <div className="page-shell">
-            <section className="page-hero">
-                <span className="page-hero__eyebrow">Transaktionen</span>
-                <h1>Bankbewegungen durchsuchen</h1>
-                <p>
-                    Filtere nach Zeitraum und Kategorien, lade neue Dateien hoch und halte
-                    deine Übersicht ohne Medienbruch aktuell.
-                </p>
-            </section>
-
             <section className="page-card">
                 <div className="page-card__header">
                     <h2>Filter und Aktionen</h2>
-                    <p>Verfeinere die Anzeige und öffne Upload oder Kategorieverwaltung direkt von hier.</p>
                 </div>
                 <div className="page-card__body">
                     <div className="row g-3 align-items-center">
@@ -236,14 +226,11 @@ export const ManageTransaction: React.FC<{}> = () => {
             </section>
 
             <section className="page-card">
-                <div className="page-card__header">
-                    <h2>Ergebnisse</h2>
-                    <p>{filteredTransactions.length} Einträge in der aktuellen Auswahl.</p>
-                </div>
                 <div className="page-card__body">
-                    <div className="page-table-wrap" style={{ maxHeight: '650px' }}>
-                        <table className="table table-striped table-hover rounded-table">
-                            <thead className="table-dark">
+                    <div className="transactions-table-shell">
+                        <div className="transactions-table-wrap" style={{ maxHeight: '650px' }}>
+                        <table className="table transactions-table">
+                            <thead>
                             <tr>
                                 <th>Buchungsdatum</th>
                                 <th>Begünstigter</th>
@@ -262,32 +249,35 @@ export const ManageTransaction: React.FC<{}> = () => {
                                     return (
                                         <tr key={index}>
                                             <td>{transaction.date}</td>
-                                            <td>{transaction.purpose}</td>
-                                            <td>{transaction.category}</td>
-                                            <td>{transaction.status}</td>
-                                            <td className={amountClass}>{transaction.amount}</td>
+                                            <td className="transactions-table__purpose">{transaction.purpose}</td>
+                                            <td className="transactions-table__category">{transaction.category}</td>
+                                            <td>
+                                                <span className="transactions-table__status">{transaction.status}</span>
+                                            </td>
+                                            <td>
+                                                <span className={`transactions-table__amount ${amountClass}`}>
+                                                    {transaction.amount}
+                                                </span>
+                                            </td>
                                         </tr>
                                     );
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={5} className="text-center">Keine Transaktionen gefunden</td>
+                                    <td colSpan={5} className="transactions-table__empty">Keine Transaktionen gefunden</td>
                                 </tr>
                             )}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section className="page-stat-grid">
+            <section className="page-stat-grid page-stat-grid--compact page-stat-grid--align-right">
                 <article className="page-stat">
                     <span>Angezeigt</span>
                     <strong>{filteredTransactions.length}</strong>
-                </article>
-                <article className="page-stat">
-                    <span>Kategorien</span>
-                    <strong>{availableCategories.length}</strong>
                 </article>
                 <article className="page-stat">
                     <span>Gesamtsumme</span>

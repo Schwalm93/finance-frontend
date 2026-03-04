@@ -91,6 +91,14 @@
   gap: 1rem;
 }
 
+.page-stat-grid--compact {
+  grid-template-columns: repeat(2, minmax(220px, 280px));
+}
+
+.page-stat-grid--align-right {
+  justify-content: end;
+}
+
 .page-stat {
   display: grid;
   gap: 0.3rem;

@@ -72,6 +72,7 @@ npm run preview
 ## Transaction Upload Modal
 - In `Manage Transactions`, click `Transaktionen hinzufügen` to open the upload modal.
 - After a successful file upload, the modal closes automatically.
+- After a successful file upload, a success toast is shown outside the modal so it remains visible after closing.
 - On failed uploads or missing file selection, the modal stays open so the user can correct the issue.
 
 ## Login Modal
@@ -88,6 +89,11 @@ npm run preview
 - The frontend now uses a shared app shell with a soft gradient background, a glass-style navigation bar and centered content width.
 - The original money coin logo in the navigation is kept and embedded in the updated top bar.
 - Landing page, transaction overview, asset overview, user management and the error page now share the same hero/card layout system from `src/components/sites/css/SiteLayout.css`.
+
+## Transaction Table Design
+- The transaction overview table now uses a custom themed table shell instead of the default Bootstrap dark header look.
+- Header, row hover, status labels and amount pills match the new blue-gold design language.
+- Positive and negative amounts are rendered as colored capsules for faster scanning.
 
 ## Docker Compose Integration
 From repository root, compose builds and serves the frontend through Nginx as the `frontend` service.
