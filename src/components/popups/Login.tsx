@@ -1,37 +1,87 @@
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
+import './ModalTheme.css';
+import './Login.css';
 
-export const Login: React.FC<{
-  handleLoginModal: Function;
-}> = (props) => {
+type LoginProps = {
+  handleLoginModal: (isOpen: boolean) => void;
+};
+
+export const Login: React.FC<LoginProps> = ({ handleLoginModal }) => {
+  const closeModal = () => {
+    handleLoginModal(false);
+  };
+
   return (
-    <Modal show={true} onHide={() => props.handleLoginModal(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title className="text-center">Login</Modal.Title>
+    <Modal
+      show={true}
+      onHide={closeModal}
+      centered
+      dialogClassName="login-modal__dialog"
+      contentClassName="login-modal__content"
+    >
+      <Modal.Header closeButton className="login-modal__header">
+        <Modal.Title className="login-modal__title">Willkommen zurück</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <div style={{display: 'flex'}}>
-          <div>
-            <h4 style={{marginBottom: 20 }}>Username</h4>
-            <h4>Password</h4>
-          </div>
-          <div>
-            <input className="m-3 mt-0" type="text"></input>
-            <input className="m-3 mt-0 " type="password"></input>
+      <Modal.Body className="login-modal__body">
+        <div className="login-modal__hero">
+          <span className="login-modal__eyebrow">GoFinance</span>
+          <h2>Deine Finanzen an einem Ort.</h2>
+          <p>
+            Melde dich an, um Transaktionen, Vermögen und Auswertungen in einem
+            klaren Workflow zu verwalten.
+          </p>
+          <div className="login-modal__highlights">
+            <div>
+              <strong>Live Überblick</strong>
+              <span>Konten, Uploads und Kategorien schnell im Blick.</span>
+            </div>
+            <div>
+              <strong>Weniger Reibung</strong>
+              <span>Kurzer Einstieg, klare Felder, direkte Aktion.</span>
+            </div>
           </div>
         </div>
-        <a href="#">forgot your password?</a>
+
+        <Form className="login-modal__form">
+          <Form.Group className="mb-3" controlId="loginUsername">
+            <Form.Label>Benutzername</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="max.mustermann"
+              autoComplete="username"
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-2" controlId="loginPassword">
+            <Form.Label>Passwort</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Passwort eingeben"
+              autoComplete="current-password"
+            />
+          </Form.Group>
+
+          <div className="login-modal__meta">
+            <Form.Check
+              type="checkbox"
+              id="loginRemember"
+              label="Angemeldet bleiben"
+            />
+            <a href="#" className="login-modal__link">
+              Passwort vergessen?
+            </a>
+          </div>
+
+          <div className="login-modal__actions">
+            <Button variant="light" className="login-modal__secondary" onClick={closeModal}>
+              Abbrechen
+            </Button>
+            <Button variant="dark" className="login-modal__primary" onClick={closeModal}>
+              Einloggen
+            </Button>
+          </div>
+        </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button
-          variant="secondary"
-          onClick={() => props.handleLoginModal(false)}
-        >
-          Close
-        </Button>
-        <Button variant="primary" onClick={() => props.handleLoginModal(false)}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };

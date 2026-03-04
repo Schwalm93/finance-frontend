@@ -74,6 +74,21 @@ npm run preview
 - After a successful file upload, the modal closes automatically.
 - On failed uploads or missing file selection, the modal stays open so the user can correct the issue.
 
+## Login Modal
+- The navigation login action opens a centered sign-in modal with a two-column layout.
+- The modal includes username/password fields, a remember-me option and a password reset link.
+- The current implementation is visual only; the `Einloggen` action still closes the modal until backend authentication is wired in.
+
+## Shared Modal Design
+- Login, transaction upload, category management and asset management now use the same rounded modal language with warm gradients, compact actions and responsive spacing.
+- Upload and category management use the shared modal theme from `src/components/popups/ModalTheme.css`.
+- Asset management keeps `react-modal`, but matches the same visual system through its local CSS classes.
+
+## App Layout
+- The frontend now uses a shared app shell with a soft gradient background, a glass-style navigation bar and centered content width.
+- The original money coin logo in the navigation is kept and embedded in the updated top bar.
+- Landing page, transaction overview, asset overview, user management and the error page now share the same hero/card layout system from `src/components/sites/css/SiteLayout.css`.
+
 ## Docker Compose Integration
 From repository root, compose builds and serves the frontend through Nginx as the `frontend` service.
 - Nach `make docker`, `make new` oder `make new-no-cache` ist das Frontend unter `http://localhost` erreichbar.

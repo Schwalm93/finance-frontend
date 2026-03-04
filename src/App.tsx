@@ -14,21 +14,25 @@ export const App = () => {
   //const [admin, setAdmin] = useState(false);
 
   return (
-    <>
-      <div >
-        <Router>
-          <Navigation />
-          <Routes>
-            <Route path="/" Component={LandingPage} />
-            <Route path="/home" Component={LandingPage} />
-            <Route path="/showUsers" Component={UserManagement} />
-            <Route path="/manageTransactions" Component={ManageTransaction} />
-            <Route path="/manageAssets" Component={ManageAssets} />
-            {<Route path="/*" Component={ErrorPage} />}
-          </Routes>
-        </Router>
-      </div>
-    </>
+    <div className="app-shell">
+      <div className="app-shell__orb app-shell__orb--left"></div>
+      <div className="app-shell__orb app-shell__orb--right"></div>
+      <Router>
+        <Navigation />
+        <main className="app-main">
+          <div className="app-content">
+            <Routes>
+              <Route path="/" Component={LandingPage} />
+              <Route path="/home" Component={LandingPage} />
+              <Route path="/showUsers" Component={UserManagement} />
+              <Route path="/manageTransactions" Component={ManageTransaction} />
+              <Route path="/manageAssets" Component={ManageAssets} />
+              {<Route path="/*" Component={ErrorPage} />}
+            </Routes>
+          </div>
+        </main>
+      </Router>
+    </div>
   );
 }
 

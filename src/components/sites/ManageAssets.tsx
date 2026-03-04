@@ -5,6 +5,8 @@ import Modal from 'react-modal';
 import { asset, assetDetails, chartData } from '../../models/asset';
 import { colorPalette } from '../../constants/colors';
 import { API_ENDPOINTS } from "../../api/apiConfig";
+import '../popups/ModalTheme.css';
+import './css/SiteLayout.css';
 import './css/ManageAssets.css';
 
 const ManageAssets: React.FC = () => {
@@ -152,80 +154,145 @@ const ManageAssets: React.FC = () => {
     };
 
     return (
-        <div className="manage-assets">
-            <div className="chart-container">
-                <h2>Aufteilung der Vermögenswerte</h2>
-                <div className="piechart-container">{chartData.datasets.length > 0 ? <Pie data={chartData} options={tooltipOptions} /> : <p>Loading...</p>} </div>
-                <div className="table-wrapper-on-site">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Vermögenswert</th>
-                                <th>Wert</th>
-                                <th>Kategorie</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.entries(assetDetails).map(([key, value]) => value.details.map((detail, index) => (
-                                <tr key={index}>
-                                    <td>{detail.name}</td>
-                                    <td>{detail.value}€</td>
-                                    <td>{key}</td>
-                                </tr>
-                            )))}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="total-sum">Gesamt: {totalSum}€</div>
+        <div className="page-shell manage-assets">
+            <section className="page-hero">
+                <span className="page-hero__eyebrow">Vermögen</span>
+                <h1>Assets strukturiert verwalten</h1>
+                <p>
+                    Verfolge die Verteilung deiner Vermögenswerte, prüfe Kategorien und öffne
+                    die Bearbeitung in einem durchgängigen Interface.
+                </p>
+            </section>
 
-
-                {/* Buttons */}
-                <div className="button-container">
-                    <button className="btn btn-secondary m-2 btn-uniform" onClick={() => setIsDeleteModalOpen(true)}>Bearbeiten</button>
-                </div>
-
-
-
-                {/* Modale */}
-                <Modal isOpen={isAddModalOpen} onRequestClose={() => setIsAddModalOpen(false)}>
-                    <div className="modal-header">
-                        <h2>Hinzufügen</h2>
-                        <button type="button" className="close" onClick={() => setIsAddModalOpen(false)}>&times;</button>
+            <section className="page-grid page-grid--two">
+                <article className="page-card">
+                    <div className="page-card__header">
+                        <h2>Aufteilung der Vermögenswerte</h2>
+                        <p>Die Chartansicht zeigt die Summen pro Tag und unterstützt die Detailprüfung.</p>
                     </div>
-                    {/* Weitere Inhalte hier */}
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-success">Speichern</button>
-                        <button type="button" className="btn btn-secondary" onClick={() => setIsAddModalOpen(false)}>Abbrechen</button>
+                    <div className="page-card__body">
+                        <div className="chart-container">
+                            <div className="piechart-container">{chartData.datasets.length > 0 ? <Pie data={chartData} options={tooltipOptions} /> : <p>Loading...</p>} </div>
+                        </div>
+                    </div>
+                </article>
+
+                <aside className="page-card">
+                    <div className="page-card__header">
+                        <h3>Kurzübersicht</h3>
+                        <p>Wichtige Kennzahlen auf einen Blick.</p>
+                    </div>
+                    <div className="page-card__body">
+                        <div className="page-stat-grid">
+                            <article className="page-stat">
+                                <span>Kategorien</span>
+                                <strong>{tagNames.length}</strong>
+                            </article>
+                            <article className="page-stat">
+                                <span>Assets</span>
+                                <strong>{Object.values(assetDetails).reduce((sum, entry) => sum + entry.details.length, 0)}</strong>
+                            </article>
+                            <article className="page-stat">
+                                <span>Gesamt</span>
+                                <strong>{totalSum}€</strong>
+                            </article>
+                        </div>
+                        <div className="button-container">
+                            <button className="btn btn-secondary m-2 btn-uniform" onClick={() => setIsDeleteModalOpen(true)}>Bearbeiten</button>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <section className="page-card">
+                <div className="page-card__header">
+                    <h2>Asset-Liste</h2>
+                    <p>Alle Vermögenswerte mit Wert und Kategorie in einer zentralen Tabelle.</p>
+                </div>
+                <div className="page-card__body">
+                    <div className="table-wrapper-on-site">
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Vermögenswert</th>
+                                    <th>Wert</th>
+                                    <th>Kategorie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.entries(assetDetails).map(([key, value]) => value.details.map((detail, index) => (
+                                    <tr key={index}>
+                                        <td>{detail.name}</td>
+                                        <td>{detail.value}€</td>
+                                        <td>{key}</td>
+                                    </tr>
+                                )))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="total-sum">Gesamt: {totalSum}€</div>
+                </div>
+            </section>
+
+            {/* Modale */}
+                <Modal
+                    isOpen={isAddModalOpen}
+                    onRequestClose={() => setIsAddModalOpen(false)}
+                    overlayClassName="asset-modal__overlay"
+                    className="asset-modal asset-modal--compact"
+                >
+                    <div className="asset-modal__header">
+                        <div className="app-modal__title-wrap">
+                            <span className="app-modal__eyebrow">Vermögen</span>
+                            <h2 className="app-modal__title">Asset hinzufügen</h2>
+                            <p className="app-modal__subtitle">
+                                Lege einen neuen Vermögenswert an und ergänze ihn später bei Bedarf.
+                            </p>
+                        </div>
+                        <button type="button" className="asset-modal__close" onClick={() => setIsAddModalOpen(false)}>&times;</button>
+                    </div>
+                    <div className="asset-modal__body">
+                        <div className="app-modal__surface">
+                            <p className="app-modal__section-copy">
+                                Dieses Modal ist aktuell nicht im Workflow verdrahtet, nutzt aber jetzt
+                                dasselbe Designsystem wie die übrigen Modals.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="asset-modal__footer">
+                        <div className="app-modal__actions">
+                            <button type="button" className="btn app-modal__button-outline" onClick={() => setIsAddModalOpen(false)}>Abbrechen</button>
+                            <button type="button" className="btn app-modal__button">Speichern</button>
+                        </div>
                     </div>
                 </Modal>
 
                 <Modal
                     isOpen={isDeleteModalOpen}
                     onRequestClose={() => setIsDeleteModalOpen(false)}
-                    style={{
-                        content: {
-                            top: '50%',
-                            left: '50%',
-                            right: 'auto',
-                            bottom: 'auto',
-                            marginRight: '-50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: '80%',
-                            maxWidth: '800px',
-                        }
-                    }}
+                    overlayClassName="asset-modal__overlay"
+                    className="asset-modal"
                 >
-                    <div className="modal-content" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        {/* Überschrift */}
-                        <div className="modal-header">
-                            <h2>Vermögenswerte bearbeiten</h2>
-                            <button type="button" className="close" onClick={() => setIsDeleteModalOpen(false)}>&times;</button>
+                    <div className="asset-modal__content">
+                        <div className="asset-modal__header">
+                            <div className="app-modal__title-wrap">
+                                <span className="app-modal__eyebrow">Vermögen</span>
+                                <h2 className="app-modal__title">Vermögenswerte bearbeiten</h2>
+                                <p className="app-modal__subtitle">
+                                    Pflege bestehende Assets und ergänze neue Werte in derselben Ansicht.
+                                </p>
+                            </div>
+                            <button type="button" className="asset-modal__close" onClick={() => setIsDeleteModalOpen(false)}>&times;</button>
                         </div>
 
-                        {/* Hauptbereich für Tabelle und Formular */}
-                        <div className="modal-body" style={{ display: 'flex', flexDirection: 'row', gap: '20px', flex: 1 }}>
-                            {/* Tabelle mit Assets */}
-                            <div style={{ flex: 3, overflowX: 'auto' }}>
+                        <div className="asset-modal__body asset-modal__body--split">
+                            <div className="app-modal__surface asset-modal__panel asset-modal__panel--table">
+                                <div className="asset-modal__panel-copy">
+                                    <h3 className="app-modal__section-title">Bestehende Assets</h3>
+                                    <p className="app-modal__section-copy">
+                                        Wähle Einträge für die Entfernung aus oder prüfe die aktuelle Verteilung.
+                                    </p>
+                                </div>
                                 <div className="table-wrapper">
                                     <table className="table">
                                         <thead>
@@ -261,12 +328,13 @@ const ManageAssets: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Trenner */}
-                            <div style={{ width: '1px', backgroundColor: 'grey', alignSelf: 'stretch' }}></div>
-
-                            {/* Formular mit Inputs und Dropdown */}
-                            <div style={{ flex: 1 }}>
-                                <h4>Hinzufügen</h4>
+                            <div className="app-modal__surface asset-modal__panel">
+                                <div className="asset-modal__panel-copy">
+                                    <h3 className="app-modal__section-title">Neues Asset anlegen</h3>
+                                    <p className="app-modal__section-copy">
+                                        Ergänze Name, Kaufdatum, Wert und Kategorie für einen neuen Eintrag.
+                                    </p>
+                                </div>
                                 <input
                                     type="text"
                                     placeholder="Name"
@@ -289,7 +357,7 @@ const ManageAssets: React.FC = () => {
                                     onChange={(e) => setAssetValue(e.target.value)}
                                 />
                                 <select
-                                    className="form-control mb-2"
+                                    className="form-select mb-2"
                                     value={assetTag}
                                     onChange={(e) => setAssetTag(e.target.value)}
                                 >
@@ -299,26 +367,21 @@ const ManageAssets: React.FC = () => {
                                     ))}
                                 </select>
 
-                                {/* Container für die Ausrichtung des Buttons */}
-                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button className="btn btn-success" onClick={handleSubmit}>Hinzufügen</button>
+                                <div className="asset-modal__inline-action">
+                                    <button className="btn app-modal__button" onClick={handleSubmit}>Hinzufügen</button>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Buttons */}
-                        <div className="modal-footer" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                            <button className="btn btn-danger m-2" onClick={handleRemoveSelected}>Entfernen</button>
-                            <button className="btn btn-secondary m-2" onClick={() => setIsDeleteModalOpen(false)}>Abbrechen</button>
+                        <div className="asset-modal__footer">
+                            <div className="app-modal__actions">
+                                <button className="btn app-modal__button-danger" onClick={handleRemoveSelected}>Entfernen</button>
+                                <button className="btn app-modal__button-outline" onClick={() => setIsDeleteModalOpen(false)}>Abbrechen</button>
+                            </div>
                         </div>
                     </div>
                 </Modal>
-
-
-
-
             </div>
-        </div>
     );
 };
 

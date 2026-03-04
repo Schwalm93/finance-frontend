@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Login } from '../popups/Login';
 import { AddTransaction } from '../popups/AddTransaction';
 import { useNavigate } from 'react-router-dom';
+import './Navigation.css';
 //import { NavItem } from 'react-bootstrap';
 
 
@@ -33,21 +34,25 @@ export const Navigation: React.FC<{
 
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
-        <Container>
-          <Navbar.Brand href="/">
+      <Navbar expand="lg" className="app-nav">
+        <Container fluid className="app-nav__bar">
+          <Navbar.Brand className="app-nav__brand" href="/">
             <img
               alt=""
               src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Money_coin.svg"
               width="50"
               height="50"
-              className="d-inline-block align-top"
+              className="app-nav__logo"
               onClick={() => navigater("/home")}
-            />{' '}
+            />
+            <div className="app-nav__brand-copy">
+              <span className="app-nav__brand-name">GoFinance</span>
+              <span className="app-nav__brand-subtitle">Übersicht für Transaktionen und Vermögen</span>
+            </div>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
+            <Nav className="me-auto app-nav__menu">
               {/* <NavDropdown title="UserManagement" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => navigater("/showUsers")}>
                   Edit Users
@@ -55,7 +60,7 @@ export const Navigation: React.FC<{
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.2">Add User</NavDropdown.Item>
               </NavDropdown> */}
-              <NavDropdown title="Bank Transaktionen" id="basic-nav-dropdown">
+              <NavDropdown className="app-nav__dropdown" title="Bank Transaktionen" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => setShowAddTransaction(true)}>
                   Hinzufügen
                 </NavDropdown.Item>
@@ -64,7 +69,7 @@ export const Navigation: React.FC<{
                   Übersicht
                 </NavDropdown.Item>
               </NavDropdown>
-              <NavDropdown title="Vermögen" id="basic-nav-dropdown">
+              <NavDropdown className="app-nav__dropdown" title="Vermögen" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => setShowAddTransaction(true)}>
                   Anpassen
                 </NavDropdown.Item>
@@ -73,7 +78,7 @@ export const Navigation: React.FC<{
                   Übersicht
                 </NavDropdown.Item>
               </NavDropdown>
-              <NavDropdown title="Berechnungen" id="basic-nav-dropdown">
+              <NavDropdown className="app-nav__dropdown" title="Berechnungen" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => navigater("/calculate1")}>
                   Haus kaufen
                 </NavDropdown.Item>
@@ -83,18 +88,19 @@ export const Navigation: React.FC<{
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>
+            <div className="app-nav__login-wrap">
+              <Button
+                className="app-nav__login"
+                variant={!true ? 'success' : 'danger'}
+                as="input"
+                type="button"
+                value={!true ? 'Login' : 'Logout'}
+                size="lg"
+                onClick={() => setShowLogin(true)}
+              />
+            </div>
           </Navbar.Collapse>
         </Container>
-        <div className="m-4 mt-1 mb-1">
-          <Button
-            variant={!true ? 'success' : 'danger'}
-            as="input"
-            type="button"
-            value={!true ? 'Login' : 'Logout'}
-            size="lg"
-            onClick={() => setShowLogin(true)}
-          />
-        </div>
       </Navbar>
       {showLogin && <Login handleLoginModal={handleLoginModal} />}
       {showAddTransaciton && (

@@ -1,33 +1,26 @@
 .manage-assets {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Korrigiert, verwendet `flex-start` */
-    padding: 20px;
+    display: grid;
+    align-items: stretch;
+    padding: 0;
     width: 100%;
 }
 
 .chart-container {
-    width: 70%;
-    max-width: 500px;
-    max-height: 250px;
-    /* Optional: Anpassungen für eine Ausrichtung nach links, falls nötig */
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
 }
 
 .piechart-container {
-    height: 250px;
-    /* Höhenanpassung für das PieChart */
+    height: 320px;
     margin: auto;
-    /* Zentriert das PieChart im .chart-container */
 }
 
 
 h2 {
     margin-bottom: 20px;
     text-align: center;
-    /* Sicherstellen, dass der Text der Überschrift zentriert ist, falls nötig */
     font-size: 24px;
-    /* Setzt die Schriftgröße auf 24 Pixel */
 }
 
 .total-sum {
@@ -39,8 +32,7 @@ h2 {
 
 .table-wrapper-on-site {
     margin-top: 20px;
-    max-height: 240px;
-    /* Höhe anpassen, wie benötigt */
+    max-height: 360px;
     overflow-y: auto;
 }
 
@@ -49,9 +41,7 @@ h2 {
 .button-container {
     display: flex;
     justify-content: center;
-    /* Zentriert die Buttons horizontal */
     margin-top: 20px;
-    /* Fügt etwas Abstand nach oben hinzu */
 }
 
 .btn-uniform {
@@ -100,4 +90,104 @@ h2 {
     /* Höhe anpassen, wie benötigt */
     overflow-y: auto;
     /* Aktiviert die vertikale Scrollbar, wenn nötig */
+}
+
+.asset-modal__overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(6px);
+    z-index: 1050;
+}
+
+.asset-modal {
+    width: min(1080px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    border-radius: 28px;
+    outline: none;
+    background:
+        radial-gradient(circle at top left, rgba(242, 201, 76, 0.22), transparent 34%),
+        linear-gradient(135deg, #f7f3ea 0%, #fffdfa 100%);
+    box-shadow: 0 28px 90px rgba(15, 23, 42, 0.28);
+}
+
+.asset-modal--compact {
+    width: min(640px, 100%);
+}
+
+.asset-modal__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.asset-modal__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem 1.75rem 0;
+}
+
+.asset-modal__close {
+    align-self: flex-start;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: #526074;
+}
+
+.asset-modal__body {
+    padding: 1.5rem 1.75rem;
+}
+
+.asset-modal__body--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+    gap: 1rem;
+}
+
+.asset-modal__panel {
+    display: grid;
+    gap: 1rem;
+}
+
+.asset-modal__panel--table {
+    min-width: 0;
+}
+
+.asset-modal__panel-copy {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.asset-modal__footer {
+    padding: 0 1.75rem 1.75rem;
+}
+
+.asset-modal__inline-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 767px) {
+    .asset-modal__overlay {
+        padding: 12px;
+    }
+
+    .asset-modal__header,
+    .asset-modal__body,
+    .asset-modal__footer {
+        padding-right: 1.25rem;
+        padding-left: 1.25rem;
+    }
+
+    .asset-modal__body--split {
+        grid-template-columns: 1fr;
+    }
 }

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from 'react-bootstrap';
 import {API_ENDPOINTS} from "../../api/apiConfig.ts";
+import './FileHandler.css';
 
 type FileHandlerProps = {
   onUploadSuccess?: () => void;
@@ -43,11 +44,21 @@ function FileHandler({ onUploadSuccess }: FileHandlerProps) {
   };
 
   return (
-    <div style={{ height: '70px' }} >
-      <input className='m-3 mt-3 custom-file-input-lg' type="file" onChange={handleFileChange} />
-      <Button variant="primary" onClick={handleUpload}>
-          Upload
-      </Button>
+    <div className="file-handler">
+      <div className="file-handler__copy">
+        <h3>Datei auswählen</h3>
+        <p>CSV oder Export-Datei wählen und anschließend direkt importieren.</p>
+      </div>
+      <div className="file-handler__controls">
+        <input
+          className="file-handler__input"
+          type="file"
+          onChange={handleFileChange}
+        />
+        <Button variant="dark" className="app-modal__button" onClick={handleUpload}>
+          Upload starten
+        </Button>
+      </div>
       <div>
         <ToastContainer
           position="top-right"

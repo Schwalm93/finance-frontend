@@ -1,0 +1,92 @@
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  padding: 18px 20px 0;
+  background: transparent;
+}
+
+.app-nav__bar {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid rgba(20, 33, 61, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 253, 250, 0.84);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.09);
+  backdrop-filter: blur(14px);
+}
+
+.app-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.app-nav__logo {
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.app-nav__brand-copy {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.app-nav__brand-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #14213d;
+}
+
+.app-nav__brand-subtitle {
+  font-size: 0.82rem;
+  color: #6a7687;
+}
+
+.app-nav__menu {
+  gap: 0.35rem;
+}
+
+.app-nav__dropdown .nav-link {
+  padding: 0.65rem 0.95rem;
+  border-radius: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.app-nav__dropdown .nav-link:hover,
+.app-nav__dropdown .nav-link:focus {
+  background: rgba(20, 33, 61, 0.05);
+  color: #14213d;
+}
+
+.app-nav__login {
+  min-width: 128px;
+  min-height: 3rem;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #14213d 0%, #224977 100%);
+  box-shadow: 0 12px 30px rgba(20, 33, 61, 0.18);
+}
+
+.app-nav__login:hover,
+.app-nav__login:focus,
+.app-nav__login:active {
+  background: linear-gradient(135deg, #101b32 0%, #1b3b61 100%);
+}
+
+@media (max-width: 991px) {
+  .app-nav__bar {
+    padding: 0.85rem 1rem;
+  }
+
+  .app-nav__menu {
+    padding-top: 1rem;
+  }
+
+  .app-nav__login-wrap {
+    padding-top: 0.9rem;
+  }
+}

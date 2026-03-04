@@ -3,6 +3,7 @@ import { months } from '../../constants/months';
 import { Transaction } from "../../models/transaction";
 import { API_ENDPOINTS } from "../../api/apiConfig";
 import './css/ManageTransactions.css';
+import './css/SiteLayout.css';
 import { AddTransaction } from "../popups/AddTransaction";
 import { ManageCategories } from "../popups/ManageCategories";
 
@@ -141,133 +142,169 @@ export const ManageTransaction: React.FC<{}> = () => {
     }, [availableCategories, selectedCategory]);
 
     return (
-        <div className="container mt-5">
-            <div className="row g-3 align-items-center justify-content-center">
-                <div className="col-auto">
-                    <select
-                        className="form-select"
-                        value={selectedYear}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            setSelectedYear(value === '' ? '' : Number(value));
-                        }}
-                    >
-                        <option value="">Jahr auswählen</option>
-                        {availableYears.map(year => (
-                            <option key={year} value={year}>
-                                {year}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="col-auto">
-                    <select
-                        className="form-select"
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                    >
-                        <option value="">Monat auswählen</option>
-                        {months.map((month) => (
-                            <option key={month.value} value={month.value}>
-                                {month.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="col-auto">
-                    <select
-                        className="form-select"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                    >
-                        <option value="">Kategorie auswählen</option>
-                        {availableCategories.map(category => (
-                            <option key={category} value={category}>
-                                {category}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="col-auto">
-                    <input
-                        className="form-control"
-                        type="text"
-                        placeholder="Suche"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                    />
-                </div>
-                <div className="col-auto">
-                    <button
-                        className="btn btn-primary btn-transaction"
-                        type="button"
-                        onClick={openAddTransactionModal}
-                    >
-                        Transaktionen hinzufügen
-                    </button>
-                </div>
-                <div className="col-auto">
-                    <button
-                        className="btn btn-outline-primary btn-transaction-outline"
-                        type="button"
-                        onClick={openManageCategoriesModal}
-                    >
-                        Kategorien verwalten
-                    </button>
-                </div>
+        <div className="page-shell">
+            <section className="page-hero">
+                <span className="page-hero__eyebrow">Transaktionen</span>
+                <h1>Bankbewegungen durchsuchen</h1>
+                <p>
+                    Filtere nach Zeitraum und Kategorien, lade neue Dateien hoch und halte
+                    deine Übersicht ohne Medienbruch aktuell.
+                </p>
+            </section>
 
-                {showAddTransaction && <AddTransaction handleFileuploadModal={closeAddTransactionModal} />}
-                {showManageCategories && (
-                    <ManageCategories
-                        categories={availableCategories}
-                        onClose={closeManageCategoriesModal}
-                        onChanged={handleCategoriesChanged}
-                    />
-                )}
-            </div>
-            <div className="table-responsive mt-3" style={{ maxHeight: '650px', overflowY: 'auto' }}>
-                <table className="table table-striped table-hover rounded-table">
-                    <thead className="table-dark">
-                    <tr>
-                        <th>Buchungsdatum</th>
-                        <th>Begünstigter</th>
-                        <th>Kategorie</th>
-                        <th>Status</th>
-                        <th style={{ minWidth: '113px' }}>Betrag</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {filteredTransactions.length > 0 ? (
-                        filteredTransactions.map((transaction, index) => {
-                            const isPositive = transaction.amount > 0;
-                            const isDepotDeposit = transaction.purpose === "Depot Einzahlung";
-                            const amountClass = isPositive || isDepotDeposit ? 'my-text-green' : 'my-text-red';
+            <section className="page-card">
+                <div className="page-card__header">
+                    <h2>Filter und Aktionen</h2>
+                    <p>Verfeinere die Anzeige und öffne Upload oder Kategorieverwaltung direkt von hier.</p>
+                </div>
+                <div className="page-card__body">
+                    <div className="row g-3 align-items-center">
+                        <div className="col-12 col-md-6 col-xl-auto">
+                            <select
+                                className="form-select"
+                                value={selectedYear}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setSelectedYear(value === '' ? '' : Number(value));
+                                }}
+                            >
+                                <option value="">Jahr auswählen</option>
+                                {availableYears.map(year => (
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-12 col-md-6 col-xl-auto">
+                            <select
+                                className="form-select"
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(e.target.value)}
+                            >
+                                <option value="">Monat auswählen</option>
+                                {months.map((month) => (
+                                    <option key={month.value} value={month.value}>
+                                        {month.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-12 col-md-6 col-xl-auto">
+                            <select
+                                className="form-select"
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                            >
+                                <option value="">Kategorie auswählen</option>
+                                {availableCategories.map(category => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-12 col-md-6 col-xl">
+                            <input
+                                className="form-control"
+                                type="text"
+                                placeholder="Suche"
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-12 col-md-6 col-xl-auto">
+                            <button
+                                className="btn btn-primary btn-transaction"
+                                type="button"
+                                onClick={openAddTransactionModal}
+                            >
+                                Transaktionen hinzufügen
+                            </button>
+                        </div>
+                        <div className="col-12 col-md-6 col-xl-auto">
+                            <button
+                                className="btn btn-outline-primary btn-transaction-outline"
+                                type="button"
+                                onClick={openManageCategoriesModal}
+                            >
+                                Kategorien verwalten
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                            return (
-                                <tr key={index}>
-                                    <td>{transaction.date}</td>
-                                    <td>{transaction.purpose}</td>
-                                    <td>{transaction.category}</td>
-                                    <td>{transaction.status}</td>
-                                    <td className={amountClass}>{transaction.amount}</td>
+            <section className="page-card">
+                <div className="page-card__header">
+                    <h2>Ergebnisse</h2>
+                    <p>{filteredTransactions.length} Einträge in der aktuellen Auswahl.</p>
+                </div>
+                <div className="page-card__body">
+                    <div className="page-table-wrap" style={{ maxHeight: '650px' }}>
+                        <table className="table table-striped table-hover rounded-table">
+                            <thead className="table-dark">
+                            <tr>
+                                <th>Buchungsdatum</th>
+                                <th>Begünstigter</th>
+                                <th>Kategorie</th>
+                                <th>Status</th>
+                                <th style={{ minWidth: '113px' }}>Betrag</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {filteredTransactions.length > 0 ? (
+                                filteredTransactions.map((transaction, index) => {
+                                    const isPositive = transaction.amount > 0;
+                                    const isDepotDeposit = transaction.purpose === "Depot Einzahlung";
+                                    const amountClass = isPositive || isDepotDeposit ? 'my-text-green' : 'my-text-red';
+
+                                    return (
+                                        <tr key={index}>
+                                            <td>{transaction.date}</td>
+                                            <td>{transaction.purpose}</td>
+                                            <td>{transaction.category}</td>
+                                            <td>{transaction.status}</td>
+                                            <td className={amountClass}>{transaction.amount}</td>
+                                        </tr>
+                                    );
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={5} className="text-center">Keine Transaktionen gefunden</td>
                                 </tr>
-                            );
-                        })
-                    ) : (
-                        <tr>
-                            <td colSpan={5} className="text-center">Keine Transaktionen gefunden</td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-            </div>
-            <div className="mt-3">
-                <h5>Gesamtsumme der angezeigten Beträge: <span
-                    className={totalDisplayedAmount >= 0 ? 'text-success' : 'text-danger'}>
-          {totalDisplayedAmount.toFixed(2)}
-        </span>
-                </h5>
-            </div>
+                            )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section className="page-stat-grid">
+                <article className="page-stat">
+                    <span>Angezeigt</span>
+                    <strong>{filteredTransactions.length}</strong>
+                </article>
+                <article className="page-stat">
+                    <span>Kategorien</span>
+                    <strong>{availableCategories.length}</strong>
+                </article>
+                <article className="page-stat">
+                    <span>Gesamtsumme</span>
+                    <strong className={totalDisplayedAmount >= 0 ? 'text-success' : 'text-danger'}>
+                        {totalDisplayedAmount.toFixed(2)}
+                    </strong>
+                </article>
+            </section>
+
+            {showAddTransaction && <AddTransaction handleFileuploadModal={closeAddTransactionModal} />}
+            {showManageCategories && (
+                <ManageCategories
+                    categories={availableCategories}
+                    onClose={closeManageCategoriesModal}
+                    onChanged={handleCategoriesChanged}
+                />
+            )}
         </div>
     );
 };
