@@ -142,6 +142,26 @@ export const ManageTransaction: React.FC<{}> = () => {
         return isPositive || isDepotDeposit ? 'my-text-green' : 'my-text-red';
     };
 
+    const getCategoryTagClass = (category: string) => {
+        const normalizedCategory = category.trim().toLowerCase().replace(/\s+/g, '-');
+        const knownCategories = new Set([
+            'lebensmittel',
+            'lieferdienst',
+            'shopping',
+            'restaurant',
+            'tanken',
+            'gesundheit',
+            'unternehmungen',
+            'sonstiges',
+        ]);
+
+        const categoryClass = knownCategories.has(normalizedCategory)
+            ? normalizedCategory
+            : 'default';
+
+        return `transaction-category-tag transaction-category-tag--${categoryClass}`;
+    };
+
     useEffect(() => {
         if (selectedCategory && !availableCategories.includes(selectedCategory)) {
             setSelectedCategory('');
@@ -242,7 +262,6 @@ export const ManageTransaction: React.FC<{}> = () => {
                                 <th>Buchungsdatum</th>
                                 <th>Begünstigter</th>
                                 <th>Kategorie</th>
-                                <th>Status</th>
                                 <th style={{ minWidth: '113px' }}>Betrag</th>
                             </tr>
                             </thead>
@@ -255,9 +274,6 @@ export const ManageTransaction: React.FC<{}> = () => {
                                             <td className="transactions-table__purpose">{transaction.purpose}</td>
                                             <td className="transactions-table__category">{transaction.category}</td>
                                             <td>
-                                                <span className="transactions-table__status">{transaction.status}</span>
-                                            </td>
-                                            <td>
                                                 <span className={`transactions-table__amount ${getAmountClass(transaction)}`}>
                                                     {transaction.amount}
                                                 </span>
@@ -267,7 +283,7 @@ export const ManageTransaction: React.FC<{}> = () => {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={5} className="transactions-table__empty">Keine Transaktionen gefunden</td>
+                                    <td colSpan={4} className="transactions-table__empty">Keine Transaktionen gefunden</td>
                                 </tr>
                             )}
                             </tbody>
@@ -294,9 +310,10 @@ export const ManageTransaction: React.FC<{}> = () => {
                                             <span className="transactions-mobile-card__label">Datum</span>
                                             <span>{transaction.date}</span>
                                         </div>
-                                        <div className="transactions-mobile-card__item">
-                                            <span className="transactions-mobile-card__label">Kategorie</span>
-                                            <span className="transactions-table__category">{transaction.category}</span>
+                                        <div className="transactions-mobile-card__item transactions-mobile-card__item--category">
+                                            <span className={getCategoryTagClass(transaction.category)}>
+                                                {transaction.category}
+                                            </span>
                                         </div>
                                     </div>
                                 </article>
