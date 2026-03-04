@@ -69,5 +69,12 @@ npm run preview
 - delete category (`DELETE /transactions/deleteCategory`)
 - After each change, category options are reloaded automatically in the transaction view.
 
+## Transaction Upload Modal
+- In `Manage Transactions`, click `Transaktionen hinzufügen` to open the upload modal.
+- After a successful file upload, the modal closes automatically.
+- On failed uploads or missing file selection, the modal stays open so the user can correct the issue.
+
 ## Docker Compose Integration
 From repository root, compose builds and serves the frontend through Nginx as the `frontend` service.
+- Nach `make docker`, `make new` oder `make new-no-cache` ist das Frontend unter `http://localhost` erreichbar.
+- Falls dein lokales Netzwerk/Hosts-Setup den Alias auflöst, funktioniert zusätzlich `http://finance`.

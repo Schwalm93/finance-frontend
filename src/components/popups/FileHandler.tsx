@@ -6,7 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { Button } from 'react-bootstrap';
 import {API_ENDPOINTS} from "../../api/apiConfig.ts";
 
-function FileHandler() {
+type FileHandlerProps = {
+  onUploadSuccess?: () => void;
+};
+
+function FileHandler({ onUploadSuccess }: FileHandlerProps) {
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +31,7 @@ function FileHandler() {
           },
         });
         toast.success("File upload completed!")
+        onUploadSuccess?.();
       } catch (error) {
         toast.error("File could not be uploaded!")
         console.error('File upload failed:', error);
@@ -62,4 +67,3 @@ function FileHandler() {
 }
 
 export default FileHandler;
-
