@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CryptoChartBitcoin from './CryptoChartBitcoin';
 import CryptoChartEthereum from './CryptoChartEthereum';
+import './CryptoPrices.css';
 
 const CryptoPrices: React.FC = () => {
   const [btcPrice, setBtcPrice] = useState<number | null>(null);
@@ -27,14 +28,33 @@ const CryptoPrices: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <h3><img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin"
-        style={{ width: '36px', height: '36px', marginRight: '8px', marginBottom: '8px', verticalAlign: 'middle' }} /> {btcPrice !== null ? `${btcPrice}€` : 'Loading...'}</h3>
-      <CryptoChartBitcoin />
-      <br />
-      <h3><img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Ethereum-icon-purple.svg" alt="Ethereum"
-        style={{ width: '36px', height: '36px', marginTop: '-1px', marginRight: '8px', verticalAlign: 'middle' }} /> {ethPrice !== null ? `${ethPrice}€` : 'Loading...'}</h3>
-      <CryptoChartEthereum />
+    <div className="crypto-prices">
+      <section className="crypto-prices__item">
+        <h3 className="crypto-prices__heading">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg"
+            alt="Bitcoin"
+            className="crypto-prices__icon"
+          />
+          <span>{btcPrice !== null ? `${btcPrice}€` : 'Loading...'}</span>
+        </h3>
+        <div className="crypto-prices__chart">
+          <CryptoChartBitcoin />
+        </div>
+      </section>
+      <section className="crypto-prices__item">
+        <h3 className="crypto-prices__heading">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Ethereum-icon-purple.svg"
+            alt="Ethereum"
+            className="crypto-prices__icon"
+          />
+          <span>{ethPrice !== null ? `${ethPrice}€` : 'Loading...'}</span>
+        </h3>
+        <div className="crypto-prices__chart">
+          <CryptoChartEthereum />
+        </div>
+      </section>
     </div>
   );
 };

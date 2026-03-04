@@ -89,6 +89,8 @@ npm run preview
 - The frontend now uses a shared app shell with a soft gradient background, a glass-style navigation bar and centered content width.
 - The original money coin logo in the navigation is kept and embedded in the updated top bar.
 - Landing page, transaction overview, asset overview, user management and the error page now share the same hero/card layout system from `src/components/sites/css/SiteLayout.css`.
+- Navigation, overview cards, action buttons, charts and table containers are tuned for smaller screens so the app stays usable on phones and desktop browsers without horizontal page overflow.
+- Dense data tables still keep their full column set on mobile, but now scroll inside their own container instead of breaking the page layout.
 
 ## Transaction Table Design
 - The transaction overview table now uses a custom themed table shell instead of the default Bootstrap dark header look.

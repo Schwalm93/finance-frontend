@@ -12,7 +12,8 @@
 }
 
 .piechart-container {
-    height: 320px;
+    position: relative;
+    height: clamp(240px, 45vw, 320px);
     margin: auto;
 }
 
@@ -33,7 +34,7 @@ h2 {
 .table-wrapper-on-site {
     margin-top: 20px;
     max-height: 360px;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 /*modal*/
@@ -41,16 +42,14 @@ h2 {
 .button-container {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     margin-top: 20px;
 }
 
 .btn-uniform {
-    width: 110px;
-    /* Legt eine feste Breite fest */
+    min-width: 110px;
     height: 40px;
-    /* Legt eine feste Höhe fest */
     display: inline-block;
-    /* Erlaubt die Anwendung von Breite und Höhe */
 }
 
 .modal-header {
@@ -87,9 +86,7 @@ h2 {
 /* CSS */
 .table-wrapper {
     max-height: 370px;
-    /* Höhe anpassen, wie benötigt */
-    overflow-y: auto;
-    /* Aktiviert die vertikale Scrollbar, wenn nötig */
+    overflow: auto;
 }
 
 .asset-modal__overlay {
@@ -176,6 +173,18 @@ h2 {
 }
 
 @media (max-width: 767px) {
+    .piechart-container {
+        height: 240px;
+    }
+
+    .button-container {
+        justify-content: stretch;
+    }
+
+    .btn-uniform {
+        width: 100%;
+    }
+
     .asset-modal__overlay {
         padding: 12px;
     }
@@ -189,5 +198,14 @@ h2 {
 
     .asset-modal__body--split {
         grid-template-columns: 1fr;
+    }
+
+    .asset-modal__header {
+        align-items: flex-start;
+    }
+
+    .asset-modal__inline-action,
+    .app-modal__actions {
+        justify-content: stretch;
     }
 }

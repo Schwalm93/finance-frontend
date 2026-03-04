@@ -2,6 +2,7 @@
   display: grid;
   gap: 1.5rem;
   padding: 24px 0 12px;
+  width: 100%;
 }
 
 .page-hero {
@@ -61,6 +62,7 @@
   background: rgba(255, 253, 250, 0.82);
   box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(12px);
+  min-width: 0;
 }
 
 .page-card__header {
@@ -83,6 +85,7 @@
 
 .page-card__body {
   padding: 1.5rem;
+  min-width: 0;
 }
 
 .page-stat-grid {
@@ -137,6 +140,7 @@
 @media (max-width: 767px) {
   .page-shell {
     padding-top: 16px;
+    gap: 1rem;
   }
 
   .page-hero,
@@ -144,5 +148,14 @@
   .page-card__header {
     padding-right: 1.2rem;
     padding-left: 1.2rem;
+  }
+
+  .page-hero,
+  .page-card {
+    border-radius: 22px;
+  }
+
+  .page-stat-grid--compact {
+    grid-template-columns: 1fr;
   }
 }

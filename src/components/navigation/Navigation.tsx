@@ -49,8 +49,8 @@ export const Navigation: React.FC<{
               <span className="app-nav__brand-name">GoFinance</span>
             </div>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="app-nav__toggle" />
+          <Navbar.Collapse id="basic-navbar-nav" className="app-nav__collapse">
             <Nav className="me-auto app-nav__menu">
               {/* <NavDropdown title="UserManagement" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => navigater("/showUsers")}>

@@ -1,0 +1,51 @@
+.crypto-prices {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.crypto-prices__item {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.crypto-prices__heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+  color: #14213d;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.crypto-prices__icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+}
+
+.crypto-prices__chart {
+  width: 100%;
+  min-height: 220px;
+}
+
+.crypto-prices__chart canvas {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .crypto-prices {
+    gap: 1.15rem;
+  }
+
+  .crypto-prices__chart {
+    min-height: 200px;
+  }
+
+  .crypto-prices__icon {
+    width: 30px;
+    height: 30px;
+  }
+}
