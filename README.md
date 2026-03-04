@@ -64,10 +64,11 @@ npm run preview
 ## Category Management Modal
 - In `Manage Transactions`, click `Kategorien verwalten` to open the category modal.
 - The modal supports:
-- create category (`POST /transactions/addCategory`)
-- update category (`PUT /transactions/updateCategory` with `oldCategory` and `newCategory`)
+- create category (`POST /transactions/addCategory` with `name` and `color`)
+- update category (`PUT /transactions/updateCategory` with `oldCategory`, `newCategory` and `color`)
 - delete category (`DELETE /transactions/deleteCategory`)
 - After each change, category options are reloaded automatically in the transaction view.
+- Category colors are selected directly in the modal via color input and reused for the visible transaction tags.
 
 ## Transaction Upload Modal
 - In `Manage Transactions`, click `Transaktionen hinzufügen` to open the upload modal.
@@ -97,7 +98,7 @@ npm run preview
 - Header, row hover, category tags and amount pills match the new blue-gold design language.
 - Positive and negative amounts are rendered as colored capsules for faster scanning.
 - On screens up to `767px`, the transaction overview switches from the desktop table to stacked mobile cards so purpose, amount, date, category and status stay readable without horizontal scrolling.
-- In the mobile card view, categories are now shown as colored tags with fixed frontend-defined colors as a first step before category colors become configurable.
+- Category tags now use the colors delivered by the backend category API, so browser and mobile views stay in sync after category color changes.
 - The transaction status is no longer shown in the browser table view.
 
 ## Docker Compose Integration

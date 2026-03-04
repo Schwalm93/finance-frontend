@@ -114,11 +114,6 @@
     color: #14213d;
 }
 
-.transactions-table__category {
-    font-weight: 600;
-    color: #5c6a7d;
-}
-
 .transaction-category-tag {
     display: inline-flex;
     align-items: center;
@@ -131,60 +126,6 @@
     font-weight: 700;
     line-height: 1.1;
     white-space: nowrap;
-}
-
-.transaction-category-tag--lebensmittel {
-    background: rgba(34, 197, 94, 0.16);
-    border-color: rgba(21, 128, 61, 0.18);
-    color: #166534;
-}
-
-.transaction-category-tag--lieferdienst {
-    background: rgba(249, 115, 22, 0.16);
-    border-color: rgba(194, 65, 12, 0.18);
-    color: #9a3412;
-}
-
-.transaction-category-tag--shopping {
-    background: rgba(59, 130, 246, 0.16);
-    border-color: rgba(29, 78, 216, 0.18);
-    color: #1d4ed8;
-}
-
-.transaction-category-tag--restaurant {
-    background: rgba(236, 72, 153, 0.16);
-    border-color: rgba(190, 24, 93, 0.18);
-    color: #be185d;
-}
-
-.transaction-category-tag--tanken {
-    background: rgba(245, 158, 11, 0.18);
-    border-color: rgba(180, 83, 9, 0.18);
-    color: #92400e;
-}
-
-.transaction-category-tag--gesundheit {
-    background: rgba(14, 165, 233, 0.16);
-    border-color: rgba(3, 105, 161, 0.18);
-    color: #0369a1;
-}
-
-.transaction-category-tag--unternehmungen {
-    background: rgba(168, 85, 247, 0.16);
-    border-color: rgba(126, 34, 206, 0.18);
-    color: #7e22ce;
-}
-
-.transaction-category-tag--sonstiges {
-    background: rgba(100, 116, 139, 0.16);
-    border-color: rgba(51, 65, 85, 0.18);
-    color: #334155;
-}
-
-.transaction-category-tag--default {
-    background: rgba(20, 33, 61, 0.08);
-    border-color: rgba(20, 33, 61, 0.12);
-    color: #334155;
 }
 
 .transactions-table__status {

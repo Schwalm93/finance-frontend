@@ -1,22 +1,30 @@
 import React, { useMemo, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { API_ENDPOINTS } from "../../api/apiConfig";
+import { Category } from "../../models/category";
 import "./ModalTheme.css";
 
 type Props = {
-  categories: string[];
+  categories: Category[];
   onClose: () => void;
   onChanged: () => void;
 };
 
+const DEFAULT_CATEGORY_COLOR = "#64748b";
+
 export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChanged }) => {
   const [newCategory, setNewCategory] = useState("");
+  const [newCategoryColor, setNewCategoryColor] = useState(DEFAULT_CATEGORY_COLOR);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [updatedCategoryName, setUpdatedCategoryName] = useState("");
+  const [updatedCategoryColor, setUpdatedCategoryColor] = useState(DEFAULT_CATEGORY_COLOR);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const sortedCategories = useMemo(() => [...categories].sort((a, b) => a.localeCompare(b)), [categories]);
+  const sortedCategories = useMemo(
+    () => [...categories].sort((a, b) => a.name.localeCompare(b.name)),
+    [categories]
+  );
 
   const resetError = () => {
     if (errorMessage) {
@@ -38,7 +46,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
       const response = await fetch(API_ENDPOINTS.addCategory, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: trimmed }),
+        body: JSON.stringify({ name: trimmed, color: newCategoryColor }),
       });
 
       if (!response.ok) {
@@ -46,6 +54,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
       }
 
       setNewCategory("");
+      setNewCategoryColor(DEFAULT_CATEGORY_COLOR);
       onChanged();
     } catch (error) {
       console.error("Fehler beim Erstellen der Kategorie:", error);
@@ -60,7 +69,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
     const newCategoryName = updatedCategoryName.trim();
 
     if (!oldCategory || !newCategoryName) {
-      setErrorMessage("Bitte Kategorie auswählen und neuen Namen eingeben.");
+      setErrorMessage("Bitte Kategorie auswählen und Namen oder Farbe anpassen.");
       return;
     }
 
@@ -71,14 +80,18 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
       const response = await fetch(API_ENDPOINTS.updateCategory, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oldCategory, newCategory: newCategoryName }),
+        body: JSON.stringify({
+          oldCategory,
+          newCategory: newCategoryName,
+          color: updatedCategoryColor,
+        }),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      setUpdatedCategoryName("");
+      setSelectedCategory(newCategoryName);
       onChanged();
     } catch (error) {
       console.error("Fehler beim Aktualisieren der Kategorie:", error);
@@ -111,6 +124,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
 
       setSelectedCategory("");
       setUpdatedCategoryName("");
+      setUpdatedCategoryColor(DEFAULT_CATEGORY_COLOR);
       onChanged();
     } catch (error) {
       console.error("Fehler beim Löschen der Kategorie:", error);
@@ -133,8 +147,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
           <span className="app-modal__eyebrow">Kategorien</span>
           <Modal.Title className="app-modal__title">Kategorien verwalten</Modal.Title>
           <p className="app-modal__subtitle">
-            Erstelle, benenne um oder entferne Kategorien direkt aus dem
-            Workflow heraus.
+            Erstelle, benenne um oder ändere die Farbe einer Kategorie direkt im Workflow.
           </p>
         </div>
       </Modal.Header>
@@ -144,23 +157,36 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
             <div>
               <h3 className="app-modal__section-title">Neue Kategorie anlegen</h3>
               <p className="app-modal__section-copy">
-                Füge schnell eine neue Kategorie hinzu, damit sie direkt in der
-                Transaktionsübersicht verfügbar ist.
+                Füge eine neue Kategorie hinzu und vergebe direkt eine Farbe für das Tag.
               </p>
             </div>
 
-            <Form.Group>
-              <Form.Label>Neue Kategorie</Form.Label>
-              <Form.Control
-                type="text"
-                value={newCategory}
-                onChange={(event) => {
-                  setNewCategory(event.target.value);
-                  resetError();
-                }}
-                placeholder="z. B. Freizeit"
-              />
-            </Form.Group>
+            <div className="app-modal__grid app-modal__grid--two">
+              <Form.Group>
+                <Form.Label>Neue Kategorie</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newCategory}
+                  onChange={(event) => {
+                    setNewCategory(event.target.value);
+                    resetError();
+                  }}
+                  placeholder="z. B. Freizeit"
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Farbe</Form.Label>
+                <Form.Control
+                  type="color"
+                  value={newCategoryColor}
+                  onChange={(event) => {
+                    setNewCategoryColor(event.target.value);
+                    resetError();
+                  }}
+                />
+              </Form.Group>
+            </div>
 
             <Button
               className="app-modal__button"
@@ -177,8 +203,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
             <div>
               <h3 className="app-modal__section-title">Bestehende Kategorie ändern</h3>
               <p className="app-modal__section-copy">
-                Wähle eine vorhandene Kategorie aus und aktualisiere Namen oder
-                Löschstatus.
+                Wähle eine vorhandene Kategorie aus und passe Namen oder Farbe an.
               </p>
             </div>
 
@@ -188,14 +213,20 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
                 <Form.Select
                   value={selectedCategory}
                   onChange={(event) => {
+                    const nextCategory = sortedCategories.find(
+                      (category) => category.name === event.target.value
+                    );
+
                     setSelectedCategory(event.target.value);
+                    setUpdatedCategoryName(nextCategory?.name ?? "");
+                    setUpdatedCategoryColor(nextCategory?.color ?? DEFAULT_CATEGORY_COLOR);
                     resetError();
                   }}
                 >
                   <option value="">Kategorie auswählen</option>
                   {sortedCategories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                    <option key={category.name} value={category.name}>
+                      {category.name}
                     </option>
                   ))}
                 </Form.Select>
@@ -211,6 +242,18 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
                     resetError();
                   }}
                   placeholder="z. B. Food"
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Farbe</Form.Label>
+                <Form.Control
+                  type="color"
+                  value={updatedCategoryColor}
+                  onChange={(event) => {
+                    setUpdatedCategoryColor(event.target.value);
+                    resetError();
+                  }}
                 />
               </Form.Group>
             </div>
@@ -246,7 +289,7 @@ export const ManageCategories: React.FC<Props> = ({ categories, onClose, onChang
             onClick={onClose}
             disabled={isLoading}
           >
-          Schließen
+            Schließen
           </Button>
         </div>
       </Modal.Footer>

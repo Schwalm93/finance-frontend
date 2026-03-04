@@ -16,7 +16,7 @@ export type Users = {
   zipcode: string;
 };
 
-export const UserManagement: React.FC<{}> = () => {
+export const UserManagement: React.FC = () => {
   const [sortedusers, setSortedUsers] = useState<Users[]>([]);
 
   useEffect(() => {

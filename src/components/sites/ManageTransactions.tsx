@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { months } from '../../constants/months';
+import { Category } from "../../models/category";
 import { Transaction } from "../../models/transaction";
 import { API_ENDPOINTS } from "../../api/apiConfig";
 import './css/ManageTransactions.css';
@@ -7,10 +8,10 @@ import './css/SiteLayout.css';
 import { AddTransaction } from "../popups/AddTransaction";
 import { ManageCategories } from "../popups/ManageCategories";
 
-export const ManageTransaction: React.FC<{}> = () => {
+export const ManageTransaction: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
-    const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+    const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
     const [selectedYear, setSelectedYear] = useState<number | ''>('');
     const [selectedMonth, setSelectedMonth] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -44,16 +45,10 @@ export const ManageTransaction: React.FC<{}> = () => {
     };
 
     type AvailableCategoriesResponse = {
-        categories: string[];
+        categories: Category[];
     };
 
-    useEffect(() => {
-        fetchTransactions();
-        fetchAvailableYears();
-        fetchAvailableCategories();
-    }, [selectedYear, selectedMonth, selectedCategory, showAddTransaction, showManageCategories]);
-
-    const fetchTransactions = () => {
+    const fetchTransactions = useCallback(() => {
         fetch(API_ENDPOINTS.getTransactionsByFilter(selectedYear, selectedMonth, selectedCategory))
             .then(response => response.json())
             .then(data => {
@@ -68,17 +63,11 @@ export const ManageTransaction: React.FC<{}> = () => {
                 //     setAvailableYears(years);
                 // }
 
-                if (availableCategories.length === 0) {
-                    const categories: string[] = Array.from(
-                        new Set(data.map((transaction: Transaction) => transaction.category))
-                    );
-                    setAvailableCategories(categories);
-                }
             })
             .catch(error => console.error('Fehler beim Abrufen der Transaktionen:', error));
-    };
+    }, [selectedYear, selectedMonth, selectedCategory]);
 
-    const fetchAvailableYears = () => {
+    const fetchAvailableYears = useCallback(() => {
         fetch(API_ENDPOINTS.getAvailableYears)
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -97,9 +86,9 @@ export const ManageTransaction: React.FC<{}> = () => {
                 console.error("Fehler beim Abrufen der verfügbaren Jahre:", error);
                 setAvailableYears([new Date().getFullYear()]);
             });
-    };
+    }, []);
 
-    const fetchAvailableCategories = () => {
+    const fetchAvailableCategories = useCallback(() => {
         fetch(API_ENDPOINTS.getAvailableCategories)
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -108,17 +97,28 @@ export const ManageTransaction: React.FC<{}> = () => {
             .then((data) => {
                 const categories = Array.isArray(data?.categories)
                     ? data.categories
-                          .map((c) => String(c).trim())
-                          .filter((c) => c.length > 0)
+                          .map((category) => ({
+                              name: String(category?.name ?? "").trim(),
+                              color: String(category?.color ?? "").trim() || "#64748b",
+                          }))
+                          .filter((category) => category.name.length > 0)
                     : [];
 
-                setAvailableCategories(categories.length > 0 ? categories : ["Sonstiges"]);
+                setAvailableCategories(
+                    categories.length > 0 ? categories : [{ name: "Sonstiges", color: "#64748b" }]
+                );
             })
             .catch((error) => {
                 console.error("Fehler beim Abrufen der verfügbaren Kategorien:", error);
-                setAvailableCategories(["Sonstiges"]);
+                setAvailableCategories([{ name: "Sonstiges", color: "#64748b" }]);
             });
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchTransactions();
+        fetchAvailableYears();
+        fetchAvailableCategories();
+    }, [fetchAvailableCategories, fetchAvailableYears, fetchTransactions, showAddTransaction, showManageCategories]);
 
 
     const filterTransactions = () => {
@@ -142,28 +142,39 @@ export const ManageTransaction: React.FC<{}> = () => {
         return isPositive || isDepotDeposit ? 'my-text-green' : 'my-text-red';
     };
 
-    const getCategoryTagClass = (category: string) => {
-        const normalizedCategory = category.trim().toLowerCase().replace(/\s+/g, '-');
-        const knownCategories = new Set([
-            'lebensmittel',
-            'lieferdienst',
-            'shopping',
-            'restaurant',
-            'tanken',
-            'gesundheit',
-            'unternehmungen',
-            'sonstiges',
-        ]);
+    const getCategoryColor = (categoryName: string) => {
+        const matchingCategory = availableCategories.find((category) => category.name === categoryName);
+        return matchingCategory?.color || "#64748b";
+    };
 
-        const categoryClass = knownCategories.has(normalizedCategory)
-            ? normalizedCategory
-            : 'default';
+    const hexToRgba = (hexColor: string, alpha: number) => {
+        const sanitizedHex = hexColor.replace("#", "");
 
-        return `transaction-category-tag transaction-category-tag--${categoryClass}`;
+        if (sanitizedHex.length !== 6) {
+            return `rgba(100, 116, 139, ${alpha})`;
+        }
+
+        const red = Number.parseInt(sanitizedHex.slice(0, 2), 16);
+        const green = Number.parseInt(sanitizedHex.slice(2, 4), 16);
+        const blue = Number.parseInt(sanitizedHex.slice(4, 6), 16);
+
+        return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    };
+
+    const getCategoryTagStyle = (categoryName: string) => {
+        const color = getCategoryColor(categoryName);
+
+        return {
+            color,
+            borderColor: hexToRgba(color, 0.28),
+            backgroundColor: hexToRgba(color, 0.16),
+        };
     };
 
     useEffect(() => {
-        if (selectedCategory && !availableCategories.includes(selectedCategory)) {
+        const availableCategoryNames = availableCategories.map((category) => category.name);
+
+        if (selectedCategory && !availableCategoryNames.includes(selectedCategory)) {
             setSelectedCategory('');
         }
     }, [availableCategories, selectedCategory]);
@@ -215,8 +226,8 @@ export const ManageTransaction: React.FC<{}> = () => {
                             >
                                 <option value="">Kategorie auswählen</option>
                                 {availableCategories.map(category => (
-                                    <option key={category} value={category}>
-                                        {category}
+                                    <option key={category.name} value={category.name}>
+                                        {category.name}
                                     </option>
                                 ))}
                             </select>
@@ -272,7 +283,14 @@ export const ManageTransaction: React.FC<{}> = () => {
                                         <tr key={index}>
                                             <td>{transaction.date}</td>
                                             <td className="transactions-table__purpose">{transaction.purpose}</td>
-                                            <td className="transactions-table__category">{transaction.category}</td>
+                                            <td>
+                                                <span
+                                                    className="transaction-category-tag"
+                                                    style={getCategoryTagStyle(transaction.category)}
+                                                >
+                                                    {transaction.category}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <span className={`transactions-table__amount ${getAmountClass(transaction)}`}>
                                                     {transaction.amount}
@@ -311,7 +329,10 @@ export const ManageTransaction: React.FC<{}> = () => {
                                             <span>{transaction.date}</span>
                                         </div>
                                         <div className="transactions-mobile-card__item transactions-mobile-card__item--category">
-                                            <span className={getCategoryTagClass(transaction.category)}>
+                                            <span
+                                                className="transaction-category-tag"
+                                                style={getCategoryTagStyle(transaction.category)}
+                                            >
                                                 {transaction.category}
                                             </span>
                                         </div>

@@ -17,6 +17,7 @@ export const Navigation: React.FC<{
   //const [loggedIn, setLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showAddTransaciton, setShowAddTransaction] = useState(false);
+  const isLoggedIn = true;
 
   function handleLoginModal(state: boolean) {
     setShowLogin(state);
@@ -90,10 +91,10 @@ export const Navigation: React.FC<{
             <div className="app-nav__login-wrap">
               <Button
                 className="app-nav__login"
-                variant={!true ? 'success' : 'danger'}
+                variant={isLoggedIn ? 'danger' : 'success'}
                 as="input"
                 type="button"
-                value={!true ? 'Login' : 'Logout'}
+                value={isLoggedIn ? 'Logout' : 'Login'}
                 size="lg"
                 onClick={() => setShowLogin(true)}
               />

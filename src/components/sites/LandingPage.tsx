@@ -2,7 +2,7 @@ import React from "react";
 import CryptoPrices from "../crypto/CryptoPrices";
 import "./css/SiteLayout.css";
 
-export const LandingPage: React.FC<{}> = () => {
+export const LandingPage: React.FC = () => {
     return (
         <div className="page-shell">
             <section className="page-grid page-grid--two">

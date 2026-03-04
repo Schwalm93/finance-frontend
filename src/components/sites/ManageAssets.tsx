@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import type { TooltipItem } from "chart.js";
 import { Pie } from 'react-chartjs-2';
 import Modal from 'react-modal';
 
@@ -27,15 +28,41 @@ const ManageAssets: React.FC = () => {
     const [assetPurchaseDate, setAssetPurchaseDate] = useState(today);
     const [assetTag, setAssetTag] = useState('');
 
-    useEffect(() => {
-        fetchAssets();
-    }, []);
-
     const totalSum = useMemo(() => {
         return Object.values(assetDetails).reduce((sum, { totalValue }) => sum + totalValue, 0);
     }, [assetDetails]);
 
-    const fetchAssets = async () => {
+    const processData = useCallback((assets: asset[]) => {
+        const groupedAssets = assets.reduce((acc: assetDetails, asset: asset) => {
+            const tag = asset.assetTag.tagName;
+            if (!acc[tag]) {
+                acc[tag] = { totalValue: 0, details: [], subTypes: asset.assetTag.subTypes };
+            }
+            acc[tag].totalValue += asset.value;
+            acc[tag].details.push({ name: asset.name, value: asset.value });
+            return acc;
+        }, {});
+
+        const labels = Object.keys(groupedAssets);
+        const data = labels.map(label => groupedAssets[label].totalValue);
+        const colors = generateUniqueColors(labels.length, colorPalette);
+
+        const newChartData: chartData = {
+            labels,
+            datasets: [{
+                label: 'Asset Wert nach Tag',
+                data,
+                backgroundColor: colors,
+                borderColor: colors,
+                borderWidth: 1,
+            }],
+        };
+
+        setChartData(newChartData);
+        setAssetDetails(groupedAssets);
+    }, []);
+
+    const fetchAssets = useCallback(async () => {
         try {
             const response = await fetch(API_ENDPOINTS.getAllAssets);
             if (!response.ok) {
@@ -46,7 +73,11 @@ const ManageAssets: React.FC = () => {
         } catch (error) {
             console.error("Es gab ein Problem beim Abrufen der Assets: ", error);
         }
-    };
+    }, [processData]);
+
+    useEffect(() => {
+        void fetchAssets();
+    }, [fetchAssets]);
 
     const handleRemoveSelected = async () => {
         try {
@@ -100,50 +131,23 @@ const ManageAssets: React.FC = () => {
 
 
     const generateUniqueColors = (count: number, palette: string[]): string[] => {
-        let colors: string[] = [];
+        const colors: string[] = [];
         for (let i = 0; i < count; i++) {
             colors.push(palette[i % palette.length]);
         }
         return colors;
     };
 
-    const processData = (assets: asset[]) => {
-        const groupedAssets = assets.reduce((acc: assetDetails, asset: asset) => {
-            const tag = asset.assetTag.tagName;
-            if (!acc[tag]) {
-                acc[tag] = { totalValue: 0, details: [], subTypes: asset.assetTag.subTypes };
-            }
-            acc[tag].totalValue += asset.value;
-            acc[tag].details.push({ name: asset.name, value: asset.value });
-            return acc;
-        }, {});
-
-        const labels = Object.keys(groupedAssets);
-        const data = labels.map(label => groupedAssets[label].totalValue);
-        const colors = generateUniqueColors(labels.length, colorPalette); // Verwenden Sie hier die generierten einzigartigen Farben
-
-        const newChartData: chartData = {
-            labels,
-            datasets: [{
-                label: 'Asset Wert nach Tag',
-                data,
-                backgroundColor: colors,
-                borderColor: colors,
-                borderWidth: 1,
-            }],
-        };
-
-        setChartData(newChartData);
-        setAssetDetails(groupedAssets);
-    };
-
     const tooltipOptions = {
         plugins: {
             tooltip: {
                 callbacks: {
-                    label: function (context: any) {
-                        const label = context.chart.data.labels[context.dataIndex];
+                    label: function (context: TooltipItem<'pie'>) {
+                        const label = String(context.label ?? "");
                         const assetInfo = assetDetails[label];
+                        if (!assetInfo) {
+                            return label;
+                        }
                         const detailsText = assetInfo.details.map(d => `${d.name} ${d.value}`).join(", ");
                         return `${label}: [${detailsText}]`;
                     }

@@ -1,7 +1,7 @@
 import React from "react";
 import "./css/SiteLayout.css";
 
-export const ErrorPage: React.FC<{}> = () => {
+export const ErrorPage: React.FC = () => {
 
     return (
         <div className="page-shell">
