@@ -108,3 +108,24 @@ From repository root, compose builds and serves the frontend through Nginx as th
 - Im Heimnetz ist das Frontend auch direkt über die Server-IP erreichbar: `http://<SERVER-IP>`.
 - Optional funktioniert weiterhin ein eigener Hostname (zum Beispiel `http://finance`), wenn dieser in deinem LAN auf die Server-IP aufgelöst wird.
 - Nginx liefert `index.html` bewusst ohne Cache aus, damit Browser nach Deployments keine veralteten Asset-Hashes laden.
+
+## Forgejo CI for Frontend Repository
+When this module is split into its own repository (`app-frontend`), the workflow
+`/.forgejo/workflows/frontend-image.yml` builds and pushes:
+
+- `REGISTRY_HOST/REGISTRY_NAMESPACE/frontend:<tag>`
+
+Required Forgejo configuration:
+
+- Repository Variables:
+  - `REGISTRY_HOST` (example: `registry.example.lan`)
+  - `REGISTRY_NAMESPACE` (example: `finance`)
+  - `VITE_API_BASE_URL` (optional; defaults to `/api` if not set)
+- Repository Secrets:
+  - `REGISTRY_USERNAME`
+  - `REGISTRY_PASSWORD`
+
+Tag behavior:
+
+- Push on `main` creates two tags: `main` and `main-<shortsha>`.
+- Git tags matching `v*` create two tags: the same version (for example `v1.2.0`) and `latest`.
