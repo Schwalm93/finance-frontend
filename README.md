@@ -105,4 +105,6 @@ npm run preview
 ## Docker Compose Integration
 From repository root, compose builds and serves the frontend through Nginx as the `frontend` service.
 - Nach `make docker`, `make new` oder `make new-no-cache` ist das Frontend unter `http://localhost` erreichbar.
-- Falls dein lokales Netzwerk/Hosts-Setup den Alias auflöst, funktioniert zusätzlich `http://finance`.
+- Im Heimnetz ist das Frontend auch direkt über die Server-IP erreichbar: `http://<SERVER-IP>`.
+- Optional funktioniert weiterhin ein eigener Hostname (zum Beispiel `http://finance`), wenn dieser in deinem LAN auf die Server-IP aufgelöst wird.
+- Nginx liefert `index.html` bewusst ohne Cache aus, damit Browser nach Deployments keine veralteten Asset-Hashes laden.
