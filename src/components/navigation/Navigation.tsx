@@ -60,24 +60,12 @@ export const Navigation: React.FC<{
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.2">Add User</NavDropdown.Item>
               </NavDropdown> */}
-              <NavDropdown className="app-nav__dropdown" title="Bank Transaktionen" id="basic-nav-dropdown">
-                <NavDropdown.Item onClick={() => setShowAddTransaction(true)}>
-                  Hinzufügen
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={() => navigater("/manageTransactions")}>
-                  Übersicht
-                </NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown className="app-nav__dropdown" title="Vermögen" id="basic-nav-dropdown">
-                <NavDropdown.Item onClick={() => setShowAddTransaction(true)}>
-                  Anpassen
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={() => navigater("/manageAssets")}>
-                  Übersicht
-                </NavDropdown.Item>
-              </NavDropdown>
+              <Nav.Link className="app-nav__item" onClick={() => navigater("/manageTransactions")}>
+                Bank Transaktionen
+              </Nav.Link>
+              <Nav.Link className="app-nav__item" onClick={() => navigater("/manageAssets")}>
+                Vermögen
+              </Nav.Link>
               <NavDropdown className="app-nav__dropdown" title="Berechnungen" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => navigater("/calculate1")}>
                   Haus kaufen

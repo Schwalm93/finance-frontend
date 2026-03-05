@@ -72,8 +72,17 @@
   color: #334155;
 }
 
+.app-nav__item.nav-link {
+  padding: 0.65rem 0.95rem;
+  border-radius: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
 .app-nav__dropdown .nav-link:hover,
-.app-nav__dropdown .nav-link:focus {
+.app-nav__dropdown .nav-link:focus,
+.app-nav__item.nav-link:hover,
+.app-nav__item.nav-link:focus {
   background: rgba(20, 33, 61, 0.05);
   color: #14213d;
 }
@@ -110,11 +119,17 @@
   }
 
   .app-nav__dropdown .nav-link,
+  .app-nav__item.nav-link,
   .app-nav__login {
     width: 100%;
   }
 
   .app-nav__dropdown .nav-link {
+    padding: 0.8rem 1rem;
+    background: rgba(20, 33, 61, 0.04);
+  }
+
+  .app-nav__item.nav-link {
     padding: 0.8rem 1rem;
     background: rgba(20, 33, 61, 0.04);
   }
