@@ -14,4 +14,8 @@ export const API_ENDPOINTS = {
     addCategory: `${API_BASE_URL}/transactions/addCategory`,
     deleteCategory: `${API_BASE_URL}/transactions/deleteCategory`,
     updateCategory: `${API_BASE_URL}/transactions/updateCategory`,
+    getCalendarEvents: `${API_BASE_URL}/calendar/events`,
+    createCalendarEvent: `${API_BASE_URL}/calendar/events`,
+    updateCalendarEvent: (id: number) => `${API_BASE_URL}/calendar/events/${id}`,
+    deleteCalendarEvent: (id: number) => `${API_BASE_URL}/calendar/events/${id}`,
 };

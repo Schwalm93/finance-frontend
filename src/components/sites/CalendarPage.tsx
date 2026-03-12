@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Modal from "react-modal";
 
+import { API_ENDPOINTS } from "../../api/apiConfig";
 import "./css/CalendarPage.css";
 
 type RecurrenceRule = "none" | "daily" | "weekly" | "monthly" | "yearly";
 
 type CalendarEvent = {
-  id: string;
+  id: number;
   title: string;
   notes: string;
   date: string;
@@ -19,7 +20,6 @@ type CalendarEvent = {
 
 type EventDraft = Omit<CalendarEvent, "id">;
 
-const STORAGE_KEY = "finance.calendar.events";
 const DAY_NAMES = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const MONTH_NAMES = [
   "Januar",
@@ -111,31 +111,6 @@ const formatSelectedDate = (dateKey: string): string => {
   });
 };
 
-const createSampleEvents = (today: string): CalendarEvent[] => [
-  {
-    id: "sample-budget-review",
-    title: "Budget-Check",
-    notes: "Fixer Monatsueberblick fuer Ausgaben und Sparziele.",
-    date: today,
-    startTime: "19:00",
-    endTime: "19:30",
-    color: "#1f6feb",
-    allDay: false,
-    recurrence: "monthly",
-  },
-  {
-    id: "sample-investment",
-    title: "Depot-Review",
-    notes: "Woechentlicher Blick auf Vermoegen und Positionen.",
-    date: today,
-    startTime: "08:00",
-    endTime: "08:20",
-    color: "#2aa876",
-    allDay: false,
-    recurrence: "weekly",
-  },
-];
-
 const sortEvents = (events: CalendarEvent[]): CalendarEvent[] =>
   [...events].sort((left, right) => {
     if (left.allDay !== right.allDay) {
@@ -143,14 +118,6 @@ const sortEvents = (events: CalendarEvent[]): CalendarEvent[] =>
     }
     return left.startTime.localeCompare(right.startTime);
   });
-
-const buildEventId = (): string => {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-
-  return `event-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-};
 
 const getWeekDays = (dateKey: string, events: CalendarEvent[], todayKey: string) => {
   const anchor = parseDate(dateKey);
@@ -181,34 +148,27 @@ export const CalendarPage = () => {
   });
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState<EventDraft>(() => createEmptyDraft(todayKey));
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
 
   useEffect(() => {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      setEvents(createSampleEvents(todayKey));
-      return;
-    }
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.getCalendarEvents);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = (await response.json()) as CalendarEvent[];
+        setEvents(sortEvents(data));
+      } catch (error) {
+        console.error("Fehler beim Laden der Kalenderdaten", error);
+      }
+    };
 
-    try {
-      const parsed = JSON.parse(raw) as CalendarEvent[];
-      setEvents(parsed);
-    } catch {
-      setEvents(createSampleEvents(todayKey));
-    }
-  }, [todayKey]);
-
-  useEffect(() => {
-    if (events.length === 0) {
-      window.localStorage.removeItem(STORAGE_KEY);
-      return;
-    }
-
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-  }, [events]);
+    void fetchEvents();
+  }, []);
 
   const monthDays = useMemo(() => {
     const monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
@@ -261,12 +221,12 @@ export const CalendarPage = () => {
   };
 
   const handleSave = () => {
-    if (!draft.title.trim()) {
-      return;
-    }
+    const saveEvent = async () => {
+      if (!draft.title.trim()) {
+        return;
+      }
 
-    const normalized: CalendarEvent = {
-      id: editingId ?? buildEventId(),
+      const normalized = {
       title: draft.title.trim(),
       notes: draft.notes.trim(),
       date: draft.date,
@@ -275,27 +235,62 @@ export const CalendarPage = () => {
       color: draft.color,
       allDay: draft.allDay,
       recurrence: draft.recurrence,
+      };
+
+      try {
+        const response = await fetch(
+          editingId ? API_ENDPOINTS.updateCalendarEvent(editingId) : API_ENDPOINTS.createCalendarEvent,
+          {
+            method: editingId ? "PUT" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(normalized),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const saved = (await response.json()) as CalendarEvent;
+        setEvents((current) => {
+          const next = editingId
+            ? current.map((event) => (event.id === editingId ? saved : event))
+            : [...current, saved];
+          return sortEvents(next);
+        });
+
+        setSelectedDate(saved.date);
+        setCurrentMonth(new Date(parseDate(saved.date).getFullYear(), parseDate(saved.date).getMonth(), 1));
+        setModalOpen(false);
+      } catch (error) {
+        console.error("Fehler beim Speichern des Kalendereintrags", error);
+      }
     };
 
-    setEvents((current) => {
-      const next = editingId
-        ? current.map((event) => (event.id === editingId ? normalized : event))
-        : [...current, normalized];
-      return sortEvents(next);
-    });
-
-    setSelectedDate(draft.date);
-    setCurrentMonth(new Date(parseDate(draft.date).getFullYear(), parseDate(draft.date).getMonth(), 1));
-    setModalOpen(false);
+    void saveEvent();
   };
 
   const handleDelete = () => {
-    if (!editingId) {
-      return;
-    }
+    const deleteEvent = async () => {
+      if (!editingId) {
+        return;
+      }
 
-    setEvents((current) => current.filter((event) => event.id !== editingId));
-    setModalOpen(false);
+      try {
+        const response = await fetch(API_ENDPOINTS.deleteCalendarEvent(editingId), {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        setEvents((current) => current.filter((event) => event.id !== editingId));
+        setModalOpen(false);
+      } catch (error) {
+        console.error("Fehler beim Loeschen des Kalendereintrags", error);
+      }
+    };
+
+    void deleteEvent();
   };
 
   const goToMonth = (offset: number) => {
