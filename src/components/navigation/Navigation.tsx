@@ -66,6 +66,9 @@ export const Navigation: React.FC<{
               <Nav.Link className="app-nav__item" onClick={() => navigater("/manageAssets")}>
                 Vermögen
               </Nav.Link>
+              <Nav.Link className="app-nav__item" onClick={() => navigater("/calendar")}>
+                Kalender
+              </Nav.Link>
               <NavDropdown className="app-nav__dropdown" title="Berechnungen" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => navigater("/calculate1")}>
                   Haus kaufen

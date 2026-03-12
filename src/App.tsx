@@ -10,6 +10,7 @@ import { ErrorPage } from "./components/sites/ErrorPage";
 import { LandingPage } from "./components/sites/LandingPage";
 import { ManageTransaction } from "./components/sites/ManageTransactions";
 import ManageAssets from "./components/sites/ManageAssets";
+import { CalendarPage } from "./components/sites/CalendarPage";
 
 export const App = () => {
   //const [loggedIn] = useState(false);
@@ -29,6 +30,7 @@ export const App = () => {
               <Route path="/showUsers" Component={UserManagement} />
               <Route path="/manageTransactions" Component={ManageTransaction} />
               <Route path="/manageAssets" Component={ManageAssets} />
+              <Route path="/calendar" Component={CalendarPage} />
               {<Route path="/*" Component={ErrorPage} />}
             </Routes>
           </div>
