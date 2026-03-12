@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Modal from "react-modal";
 
 import "./css/CalendarPage.css";
@@ -152,6 +152,26 @@ const buildEventId = (): string => {
   return `event-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 };
 
+const getWeekDays = (dateKey: string, events: CalendarEvent[], todayKey: string) => {
+  const anchor = parseDate(dateKey);
+  const weekday = (anchor.getDay() + 6) % 7;
+  const monday = new Date(anchor);
+  monday.setDate(anchor.getDate() - weekday);
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    const key = getDateKey(date);
+    return {
+      key,
+      shortLabel: DAY_NAMES[index],
+      dayNumber: date.getDate(),
+      isToday: key === todayKey,
+      items: sortEvents(events.filter((event) => occursOnDate(event, key))),
+    };
+  });
+};
+
 export const CalendarPage = () => {
   const todayKey = getDateKey(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -163,6 +183,8 @@ export const CalendarPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<EventDraft>(() => createEmptyDraft(todayKey));
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   useEffect(() => {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -207,6 +229,13 @@ export const CalendarPage = () => {
       };
     });
   }, [currentMonth, events, todayKey]);
+
+  const selectedEvents = useMemo(
+    () => sortEvents(events.filter((event) => occursOnDate(event, selectedDate))),
+    [events, selectedDate]
+  );
+
+  const weekDays = useMemo(() => getWeekDays(selectedDate, events, todayKey), [selectedDate, events, todayKey]);
 
   const openNewEvent = (dateKey: string) => {
     setSelectedDate(dateKey);
@@ -279,10 +308,35 @@ export const CalendarPage = () => {
     setSelectedDate(todayKey);
   };
 
+  const handleTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    const touch = event.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    if (touchStartX.current === null || touchStartY.current === null) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX.current;
+    const deltaY = touch.clientY - touchStartY.current;
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY)) {
+      return;
+    }
+
+    goToMonth(deltaX < 0 ? 1 : -1);
+  };
+
   return (
     <div className="calendar-page">
       <section className="calendar-page__surface">
-        <section className="calendar-board">
+        <section className="calendar-board" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <div className="calendar-board__toolbar">
             <button type="button" className="calendar-board__icon-button" onClick={() => goToMonth(-1)} aria-label="Vorheriger Monat">
               &#8249;
@@ -300,6 +354,59 @@ export const CalendarPage = () => {
               <button type="button" className="calendar-board__icon-button" onClick={() => goToMonth(1)} aria-label="Naechster Monat">
                 &#8250;
               </button>
+            </div>
+          </div>
+
+          <div className="calendar-week-strip">
+            {weekDays.map((day) => (
+              <button
+                key={day.key}
+                type="button"
+                className={[
+                  "calendar-week-day",
+                  selectedDate === day.key ? "calendar-week-day--selected" : "",
+                  day.isToday ? "calendar-week-day--today" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => setSelectedDate(day.key)}
+              >
+                <span className="calendar-week-day__label">{day.shortLabel}</span>
+                <strong className="calendar-week-day__number">{day.dayNumber}</strong>
+                <span className="calendar-week-day__meta">{day.items.length > 0 ? `${day.items.length}` : ""}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="calendar-agenda-mobile">
+            <div className="calendar-agenda-mobile__header">
+              <span className="calendar-board__label">{formatSelectedDate(selectedDate)}</span>
+              <button type="button" className="calendar-page__ghost-button" onClick={() => openNewEvent(selectedDate)}>
+                Termin
+              </button>
+            </div>
+
+            <div className="calendar-agenda-mobile__list">
+              {selectedEvents.length === 0 ? (
+                <button type="button" className="calendar-agenda-mobile__empty" onClick={() => openNewEvent(selectedDate)}>
+                  Termin fuer diesen Tag anlegen
+                </button>
+              ) : (
+                selectedEvents.slice(0, 4).map((event) => (
+                  <button
+                    key={event.id}
+                    type="button"
+                    className="calendar-agenda-mobile__item"
+                    onClick={() => openEditEvent(event)}
+                  >
+                    <span className="calendar-agenda-mobile__accent" style={{ background: event.color }} />
+                    <span className="calendar-agenda-mobile__title">{event.title}</span>
+                    <span className="calendar-agenda-mobile__time">
+                      {event.allDay ? "Ganztagig" : event.startTime}
+                    </span>
+                  </button>
+                ))
+              )}
             </div>
           </div>
 
