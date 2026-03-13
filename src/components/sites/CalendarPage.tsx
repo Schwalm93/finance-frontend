@@ -390,7 +390,6 @@ export const CalendarPage = () => {
               &#8249;
             </button>
             <div className="calendar-board__title">
-              <span className="calendar-board__label">{formatSelectedDate(selectedDate)}</span>
               <h2>
                 {MONTH_NAMES[currentMonth.getMonth()]} {currentMonth.getFullYear()}
               </h2>
@@ -552,12 +551,10 @@ export const CalendarPage = () => {
       >
         <div className="calendar-modal__header">
           <div>
-            <span className="calendar-page__eyebrow">{editingId ? "Termin bearbeiten" : "Neuer Termin"}</span>
             <h2>{draft.title.trim() || "Kalendereintrag"}</h2>
-            <p>{formatSelectedDate(draft.date)}</p>
           </div>
-          <button type="button" className="calendar-modal__close" onClick={() => setModalOpen(false)}>
-            x
+          <button type="button" className="calendar-modal__close" onClick={() => setModalOpen(false)} aria-label="Schließen">
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
