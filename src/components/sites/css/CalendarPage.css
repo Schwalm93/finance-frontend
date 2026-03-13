@@ -126,6 +126,50 @@
   gap: 0.65rem;
 }
 
+.calendar-board__menu {
+  position: relative;
+}
+
+.calendar-board__menu-popover {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  z-index: 20;
+  min-width: 180px;
+  padding: 0.35rem;
+  border: 1px solid rgba(20, 33, 61, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 253, 248, 0.98);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.calendar-board__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #14213d;
+  font-weight: 700;
+  text-align: left;
+}
+
+.calendar-board__menu-item:hover {
+  background: rgba(20, 33, 61, 0.05);
+}
+
+.calendar-board__menu-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #e0a100;
+  box-shadow: 0 0 0 4px rgba(224, 161, 0, 0.14);
+}
+
 .calendar-week-strip {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -201,6 +245,11 @@
   text-align: left;
 }
 
+.calendar-agenda-mobile__item--waste {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding-block: 0.62rem;
+}
+
 .calendar-agenda-mobile__empty {
   grid-template-columns: 1fr;
   justify-items: center;
@@ -209,8 +258,15 @@
 }
 
 .calendar-agenda-mobile__accent {
+  width: 0.7rem;
   min-height: 100%;
   border-radius: 999px;
+}
+
+.calendar-agenda-mobile__item--waste .calendar-agenda-mobile__accent {
+  width: 0.72rem;
+  min-height: 0.72rem;
+  align-self: center;
 }
 
 .calendar-agenda-mobile__title,
@@ -284,6 +340,7 @@
 }
 
 .calendar-day__header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -293,6 +350,16 @@
   font-size: 0.96rem;
   font-weight: 800;
   color: #14213d;
+}
+
+.calendar-day__waste-dot {
+  position: absolute;
+  right: 0.1rem;
+  width: 0.8rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--calendar-chip);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
 }
 
 .calendar-day__items {
@@ -494,6 +561,11 @@
     gap: 0.35rem;
   }
 
+  .calendar-board__menu-popover {
+    right: 0;
+    min-width: 160px;
+  }
+
   .calendar-board__title h2 {
     font-size: 1.05rem;
   }
@@ -590,6 +662,12 @@
 
   .calendar-day__number {
     font-size: 0.8rem;
+  }
+
+  .calendar-day__waste-dot {
+    right: 0.02rem;
+    width: 0.68rem;
+    height: 0.42rem;
   }
 
   .calendar-day__items {

@@ -19,6 +19,8 @@ type CalendarEvent = {
 };
 
 type EventDraft = Omit<CalendarEvent, "id">;
+type WasteType = "none" | "gelbe-tonne" | "gruene-tonne" | "schwarze-tonne" | "bio";
+type ModalVariant = "default" | "waste";
 
 const DAY_NAMES = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const MONTH_NAMES = [
@@ -45,6 +47,17 @@ const RECURRENCE_LABELS: Record<RecurrenceRule, string> = {
 };
 
 const DEFAULT_COLORS = ["#1f6feb", "#ef7d57", "#2aa876", "#7b61ff", "#d9485f", "#e0a100"];
+const WASTE_TYPE_OPTIONS = [
+  { value: "gelbe-tonne", label: "Gelbe Tonne", color: "#e0a100" },
+  { value: "gruene-tonne", label: "Gruene Tonne", color: "#2aa876" },
+  { value: "schwarze-tonne", label: "Schwarze Tonne", color: "#2f3640" },
+  { value: "bio", label: "Bio", color: "#8a6a3f" },
+] as const satisfies ReadonlyArray<{ value: Exclude<WasteType, "none">; label: string; color: string }>;
+
+const WASTE_TYPE_BY_TITLE = new Map<string, WasteType>(WASTE_TYPE_OPTIONS.map((option) => [option.label, option.value]));
+const WASTE_CONFIG_BY_TYPE = new Map<Exclude<WasteType, "none">, (typeof WASTE_TYPE_OPTIONS)[number]>(
+  WASTE_TYPE_OPTIONS.map((option) => [option.value, option])
+);
 
 const createEmptyDraft = (date: string): EventDraft => ({
   title: "",
@@ -56,6 +69,10 @@ const createEmptyDraft = (date: string): EventDraft => ({
   allDay: false,
   recurrence: "none",
 });
+
+const getWasteType = (event: Pick<CalendarEvent, "title">): WasteType => WASTE_TYPE_BY_TITLE.get(event.title.trim()) ?? "none";
+
+const isWasteEvent = (event: Pick<CalendarEvent, "title">): boolean => getWasteType(event) !== "none";
 
 const getDateKey = (date: Date): string => {
   const year = date.getFullYear();
@@ -113,6 +130,12 @@ const formatSelectedDate = (dateKey: string): string => {
 
 const sortEvents = (events: CalendarEvent[]): CalendarEvent[] =>
   [...events].sort((left, right) => {
+    const leftIsWaste = isWasteEvent(left);
+    const rightIsWaste = isWasteEvent(right);
+
+    if (leftIsWaste !== rightIsWaste) {
+      return leftIsWaste ? -1 : 1;
+    }
     if (left.allDay !== right.allDay) {
       return left.allDay ? -1 : 1;
     }
@@ -148,11 +171,13 @@ export const CalendarPage = () => {
   });
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalVariant, setModalVariant] = useState<ModalVariant>("default");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState<EventDraft>(() => createEmptyDraft(todayKey));
+  const [wasteTypeDraft, setWasteTypeDraft] = useState<Exclude<WasteType, "none">>("gelbe-tonne");
+  const [menuOpen, setMenuOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
-
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -186,6 +211,7 @@ export const CalendarPage = () => {
         inMonth: sameMonth(date, currentMonth),
         isToday: key === todayKey,
         items: sortEvents(events.filter((event) => occursOnDate(event, key))),
+        wasteItems: sortEvents(events.filter((event) => occursOnDate(event, key) && isWasteEvent(event))),
       };
     });
   }, [currentMonth, events, todayKey]);
@@ -200,13 +226,38 @@ export const CalendarPage = () => {
   const openNewEvent = (dateKey: string) => {
     setSelectedDate(dateKey);
     setEditingId(null);
+    setModalVariant("default");
     setDraft(createEmptyDraft(dateKey));
+    setModalOpen(true);
+  };
+
+  const openNewWasteEvent = () => {
+    const wasteConfig = WASTE_CONFIG_BY_TYPE.get("gelbe-tonne");
+    if (!wasteConfig) {
+      return;
+    }
+
+    setMenuOpen(false);
+    setSelectedDate(selectedDate);
+    setEditingId(null);
+    setModalVariant("waste");
+    setWasteTypeDraft("gelbe-tonne");
+    setDraft({
+      ...createEmptyDraft(selectedDate),
+      title: wasteConfig.label,
+      color: wasteConfig.color,
+      allDay: true,
+      startTime: "",
+      endTime: "",
+    });
     setModalOpen(true);
   };
 
   const openEditEvent = (event: CalendarEvent) => {
     setSelectedDate(event.date);
     setEditingId(event.id);
+    setModalVariant(isWasteEvent(event) ? "waste" : "default");
+    setWasteTypeDraft(getWasteType(event) === "none" ? "gelbe-tonne" : (getWasteType(event) as Exclude<WasteType, "none">));
     setDraft({
       title: event.title,
       notes: event.notes,
@@ -303,6 +354,8 @@ export const CalendarPage = () => {
     setSelectedDate(todayKey);
   };
 
+  const showWasteControls = modalVariant === "waste";
+
   const handleTouchStart = (event: React.TouchEvent<HTMLElement>) => {
     const touch = event.touches[0];
     touchStartX.current = touch.clientX;
@@ -346,6 +399,25 @@ export const CalendarPage = () => {
               <button type="button" className="calendar-page__ghost-button" onClick={goToToday}>
                 Heute
               </button>
+              <div className="calendar-board__menu">
+                <button
+                  type="button"
+                  className="calendar-board__icon-button"
+                  aria-label="Kalender-Menue"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((current) => !current)}
+                >
+                  &#9776;
+                </button>
+                {menuOpen ? (
+                  <div className="calendar-board__menu-popover">
+                    <button type="button" className="calendar-board__menu-item" onClick={openNewWasteEvent}>
+                      <span className="calendar-board__menu-dot" />
+                      <span>Abfall Termin</span>
+                    </button>
+                  </div>
+                ) : null}
+              </div>
               <button type="button" className="calendar-board__icon-button" onClick={() => goToMonth(1)} aria-label="Naechster Monat">
                 &#8250;
               </button>
@@ -391,7 +463,12 @@ export const CalendarPage = () => {
                   <button
                     key={event.id}
                     type="button"
-                    className="calendar-agenda-mobile__item"
+                    className={[
+                      "calendar-agenda-mobile__item",
+                      isWasteEvent(event) ? "calendar-agenda-mobile__item--waste" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                     onClick={() => openEditEvent(event)}
                   >
                     <span className="calendar-agenda-mobile__accent" style={{ background: event.color }} />
@@ -428,10 +505,20 @@ export const CalendarPage = () => {
               >
                 <div className="calendar-day__header">
                   <span className="calendar-day__number">{day.date.getDate()}</span>
+                  {day.wasteItems[0] ? (
+                    <span
+                      className="calendar-day__waste-dot"
+                      style={{ "--calendar-chip": day.wasteItems[0].color } as React.CSSProperties}
+                      title={day.wasteItems.map((event) => event.title).join(", ")}
+                    />
+                  ) : null}
                 </div>
 
                 <div className="calendar-day__items">
-                  {day.items.slice(0, 3).map((event) => (
+                  {day.items
+                    .filter((event) => !isWasteEvent(event))
+                    .slice(0, 3)
+                    .map((event) => (
                     <span
                       key={`${day.key}-${event.id}`}
                       className="calendar-day__chip"
@@ -447,7 +534,9 @@ export const CalendarPage = () => {
                       <span className="calendar-day__chip-title">{event.title}</span>
                     </span>
                   ))}
-                  {day.items.length > 3 ? <span className="calendar-day__more">+{day.items.length - 3}</span> : null}
+                  {day.items.filter((event) => !isWasteEvent(event)).length > 3 ? (
+                    <span className="calendar-day__more">+{day.items.filter((event) => !isWasteEvent(event)).length - 3}</span>
+                  ) : null}
                 </div>
               </button>
             ))}
@@ -473,16 +562,50 @@ export const CalendarPage = () => {
         </div>
 
         <div className="calendar-modal__body">
-          <label className="calendar-field">
-            <span>Titel</span>
-            <input
-              value={draft.title}
-              onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))}
-              placeholder="Zum Beispiel Haushaltsplanung"
-            />
-          </label>
+          {showWasteControls ? null : (
+            <label className="calendar-field">
+              <span>Titel</span>
+              <input
+                value={draft.title}
+                onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))}
+                placeholder="Zum Beispiel Haushaltsplanung"
+              />
+            </label>
+          )}
 
           <div className="calendar-modal__grid">
+            {showWasteControls ? (
+              <label className="calendar-field">
+                <span>Tonne</span>
+                <select
+                  value={wasteTypeDraft}
+                  onChange={(event) => {
+                    const nextType = event.target.value as Exclude<WasteType, "none">;
+                    const wasteConfig = WASTE_CONFIG_BY_TYPE.get(nextType);
+                    if (!wasteConfig) {
+                      return;
+                    }
+
+                    setWasteTypeDraft(nextType);
+                    setDraft((current) => ({
+                      ...current,
+                      title: wasteConfig.label,
+                      color: wasteConfig.color,
+                      allDay: true,
+                      startTime: "",
+                      endTime: "",
+                    }));
+                  }}
+                >
+                  {WASTE_TYPE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
             <label className="calendar-field">
               <span>Datum</span>
               <input
@@ -492,33 +615,37 @@ export const CalendarPage = () => {
               />
             </label>
 
-            <label className="calendar-field">
-              <span>Wiederholung</span>
-              <select
-                value={draft.recurrence}
-                onChange={(event) =>
-                  setDraft((current) => ({ ...current, recurrence: event.target.value as RecurrenceRule }))
-                }
-              >
-                {Object.entries(RECURRENCE_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            {showWasteControls ? null : (
+              <label className="calendar-field">
+                <span>Wiederholung</span>
+                <select
+                  value={draft.recurrence}
+                  onChange={(event) =>
+                    setDraft((current) => ({ ...current, recurrence: event.target.value as RecurrenceRule }))
+                  }
+                >
+                  {Object.entries(RECURRENCE_LABELS).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
 
-          <label className="calendar-field calendar-field--checkbox">
-            <input
-              type="checkbox"
-              checked={draft.allDay}
-              onChange={(event) => setDraft((current) => ({ ...current, allDay: event.target.checked }))}
-            />
-            <span>Ganztagiger Termin</span>
-          </label>
+          {showWasteControls ? null : (
+            <label className="calendar-field calendar-field--checkbox">
+              <input
+                type="checkbox"
+                checked={draft.allDay}
+                onChange={(event) => setDraft((current) => ({ ...current, allDay: event.target.checked }))}
+              />
+              <span>Ganztagiger Termin</span>
+            </label>
+          )}
 
-          {!draft.allDay ? (
+          {!draft.allDay && !showWasteControls ? (
             <div className="calendar-modal__grid">
               <label className="calendar-field">
                 <span>Start</span>
@@ -540,38 +667,42 @@ export const CalendarPage = () => {
             </div>
           ) : null}
 
-          <div className="calendar-field">
-            <span>Farbe</span>
-            <div className="calendar-color-row">
-              {DEFAULT_COLORS.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  className={["calendar-color-swatch", draft.color === color ? "calendar-color-swatch--active" : ""]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={{ background: color }}
-                  onClick={() => setDraft((current) => ({ ...current, color }))}
+          {showWasteControls ? null : (
+            <div className="calendar-field">
+              <span>Farbe</span>
+              <div className="calendar-color-row">
+                {DEFAULT_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    className={["calendar-color-swatch", draft.color === color ? "calendar-color-swatch--active" : ""]
+                      .filter(Boolean)
+                      .join(" ")}
+                    style={{ background: color }}
+                    onClick={() => setDraft((current) => ({ ...current, color }))}
+                  />
+                ))}
+                <input
+                  type="color"
+                  value={draft.color}
+                  className="calendar-color-picker"
+                  onChange={(event) => setDraft((current) => ({ ...current, color: event.target.value }))}
                 />
-              ))}
-              <input
-                type="color"
-                value={draft.color}
-                className="calendar-color-picker"
-                onChange={(event) => setDraft((current) => ({ ...current, color: event.target.value }))}
-              />
+              </div>
             </div>
-          </div>
+          )}
 
-          <label className="calendar-field">
-            <span>Notiz</span>
-            <textarea
-              rows={4}
-              value={draft.notes}
-              onChange={(event) => setDraft((current) => ({ ...current, notes: event.target.value }))}
-              placeholder="Optionaler Hinweis, Ort oder Aufgabe"
-            />
-          </label>
+          {showWasteControls ? null : (
+            <label className="calendar-field">
+              <span>Notiz</span>
+              <textarea
+                rows={4}
+                value={draft.notes}
+                onChange={(event) => setDraft((current) => ({ ...current, notes: event.target.value }))}
+                placeholder="Optionaler Hinweis, Ort oder Aufgabe"
+              />
+            </label>
+          )}
         </div>
 
         <div className="calendar-modal__footer">
