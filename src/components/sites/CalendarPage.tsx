@@ -118,16 +118,6 @@ const occursOnDate = (event: CalendarEvent, dateKey: string): boolean => {
   }
 };
 
-const formatSelectedDate = (dateKey: string): string => {
-  const date = parseDate(dateKey);
-  return date.toLocaleDateString("de-DE", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
-
 const sortEvents = (events: CalendarEvent[]): CalendarEvent[] =>
   [...events].sort((left, right) => {
     const leftIsWaste = isWasteEvent(left);
@@ -445,19 +435,8 @@ export const CalendarPage = () => {
           </div>
 
           <div className="calendar-agenda-mobile">
-            <div className="calendar-agenda-mobile__header">
-              <span className="calendar-board__label">{formatSelectedDate(selectedDate)}</span>
-              <button type="button" className="calendar-page__ghost-button" onClick={() => openNewEvent(selectedDate)}>
-                Termin
-              </button>
-            </div>
-
             <div className="calendar-agenda-mobile__list">
-              {selectedEvents.length === 0 ? (
-                <button type="button" className="calendar-agenda-mobile__empty" onClick={() => openNewEvent(selectedDate)}>
-                  Termin für diesen Tag anlegen
-                </button>
-              ) : (
+              {selectedEvents.length > 0 ? (
                 selectedEvents.slice(0, 4).map((event) => (
                   <button
                     key={event.id}
@@ -477,7 +456,7 @@ export const CalendarPage = () => {
                     </span>
                   </button>
                 ))
-              )}
+              ) : null}
             </div>
           </div>
 
