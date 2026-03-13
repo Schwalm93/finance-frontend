@@ -355,7 +355,7 @@
 .calendar-day__waste-dot {
   position: absolute;
   right: 0.1rem;
-  width: 0.8rem;
+  width: 0.5rem;
   height: 0.5rem;
   border-radius: 999px;
   background: var(--calendar-chip);
@@ -666,7 +666,7 @@
 
   .calendar-day__waste-dot {
     right: 0.02rem;
-    width: 0.68rem;
+    width: 0.42rem;
     height: 0.42rem;
   }
 

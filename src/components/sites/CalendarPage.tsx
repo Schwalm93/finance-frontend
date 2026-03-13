@@ -26,7 +26,7 @@ const DAY_NAMES = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const MONTH_NAMES = [
   "Januar",
   "Februar",
-  "Maerz",
+  "März",
   "April",
   "Mai",
   "Juni",
@@ -40,16 +40,16 @@ const MONTH_NAMES = [
 
 const RECURRENCE_LABELS: Record<RecurrenceRule, string> = {
   none: "Einmalig",
-  daily: "Taeglich",
-  weekly: "Woechentlich",
+  daily: "Täglich",
+  weekly: "Wöchentlich",
   monthly: "Monatlich",
-  yearly: "Jaehrlich",
+  yearly: "Jährlich",
 };
 
 const DEFAULT_COLORS = ["#1f6feb", "#ef7d57", "#2aa876", "#7b61ff", "#d9485f", "#e0a100"];
 const WASTE_TYPE_OPTIONS = [
   { value: "gelbe-tonne", label: "Gelbe Tonne", color: "#e0a100" },
-  { value: "gruene-tonne", label: "Gruene Tonne", color: "#2aa876" },
+  { value: "gruene-tonne", label: "Grüne Tonne", color: "#2aa876" },
   { value: "schwarze-tonne", label: "Schwarze Tonne", color: "#2f3640" },
   { value: "bio", label: "Bio", color: "#8a6a3f" },
 ] as const satisfies ReadonlyArray<{ value: Exclude<WasteType, "none">; label: string; color: string }>;
@@ -337,7 +337,7 @@ export const CalendarPage = () => {
         setEvents((current) => current.filter((event) => event.id !== editingId));
         setModalOpen(false);
       } catch (error) {
-        console.error("Fehler beim Loeschen des Kalendereintrags", error);
+        console.error("Fehler beim Löschen des Kalendereintrags", error);
       }
     };
 
@@ -403,7 +403,7 @@ export const CalendarPage = () => {
                 <button
                   type="button"
                   className="calendar-board__icon-button"
-                  aria-label="Kalender-Menue"
+                  aria-label="Kalender-Menü"
                   aria-expanded={menuOpen}
                   onClick={() => setMenuOpen((current) => !current)}
                 >
@@ -418,7 +418,7 @@ export const CalendarPage = () => {
                   </div>
                 ) : null}
               </div>
-              <button type="button" className="calendar-board__icon-button" onClick={() => goToMonth(1)} aria-label="Naechster Monat">
+              <button type="button" className="calendar-board__icon-button" onClick={() => goToMonth(1)} aria-label="Nächster Monat">
                 &#8250;
               </button>
             </div>
@@ -456,7 +456,7 @@ export const CalendarPage = () => {
             <div className="calendar-agenda-mobile__list">
               {selectedEvents.length === 0 ? (
                 <button type="button" className="calendar-agenda-mobile__empty" onClick={() => openNewEvent(selectedDate)}>
-                  Termin fuer diesen Tag anlegen
+                  Termin für diesen Tag anlegen
                 </button>
               ) : (
                 selectedEvents.slice(0, 4).map((event) => (
@@ -641,7 +641,7 @@ export const CalendarPage = () => {
                 checked={draft.allDay}
                 onChange={(event) => setDraft((current) => ({ ...current, allDay: event.target.checked }))}
               />
-              <span>Ganztagiger Termin</span>
+              <span>Ganztägiger Termin</span>
             </label>
           )}
 
@@ -708,7 +708,7 @@ export const CalendarPage = () => {
         <div className="calendar-modal__footer">
           {editingId ? (
             <button type="button" className="calendar-page__danger-button" onClick={handleDelete}>
-              Loeschen
+              Löschen
             </button>
           ) : (
             <span />
